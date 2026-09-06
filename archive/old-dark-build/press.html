@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAPS · The press</title>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/press.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="logo logo--invert wordmark" href="index.html"><img src="assets/img/wordmark.svg" alt="KAPS"></a>
+    <nav class="nav">
+      <a href="index.html">Home</a><a href="#">Services</a><a href="#">Clients</a>
+      <a class="btn btn--primary btn--sm" href="#">
+        <span class="btn__label" data-text="Send us your file"><span>Send us your file</span></span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ==================== INTRO ==================== -->
+<section class="press-intro">
+  <div>
+    <p class="eyebrow">Est. 1995 &middot; New Delhi</p>
+    <h1 class="display" style="margin-top:var(--sp-5); max-width:15ch; margin-inline:auto">Print you never have to check.</h1>
+    <p class="lead" style="margin-top:var(--sp-6); max-width:44ch; margin-inline:auto">One sheet. Five stations. Everything that happens between the file you send and the delivery you sign for.</p>
+  </div>
+  <div class="press-scroll"><span>Run the press</span><i>&darr;</i></div>
+</section>
+
+<!-- ==================== THE PRESS ==================== -->
+<section class="press" data-press>
+  <div class="press__sticky">
+
+    <!-- Station rail -->
+    <div class="press__rail">
+      <div class="rail__item" data-rail="0" data-on="true">01 &middot; File</div>
+      <div class="rail__item" data-rail="1">02 &middot; Prepress</div>
+      <div class="rail__item" data-rail="2">03 &middot; Colour</div>
+      <div class="rail__item" data-rail="3">04 &middot; Quality control</div>
+      <div class="rail__item" data-rail="4">05 &middot; Delivery</div>
+    </div>
+
+    <!-- The machine -->
+    <svg class="machine" viewBox="0 0 1200 430" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+
+      <!-- The frame. Without a continuous bed and uprights the stations
+           read as five separate diagrams instead of one machine. -->
+      <line class="ln--dim" x1="0" y1="388" x2="1200" y2="388"/>
+      <line class="ln--dim" x1="0" y1="396" x2="1200" y2="396"/>
+      <g class="ln--dim">
+        <line x1="95"   y1="262" x2="95"   y2="388"/>
+        <line x1="360"  y1="118" x2="360"  y2="388"/>
+        <line x1="620"  y1="344" x2="620"  y2="388"/>
+        <line x1="895"  y1="330" x2="895"  y2="388"/>
+        <line x1="1105" y1="262" x2="1105" y2="388"/>
+      </g>
+
+      <!-- paper path -->
+      <line class="ln--dim dash" x1="0" y1="200" x2="1200" y2="200"/>
+
+      <!-- ============ 01 FEED ============ -->
+      <g class="station" data-station="0">
+        <path class="ln" d="M40 262 L150 262 L150 138 L40 138"/>
+        <line class="ln--dim" x1="52" y1="150" x2="138" y2="150"/>
+        <line class="ln--dim" x1="52" y1="162" x2="138" y2="162"/>
+        <line class="ln--dim" x1="52" y1="174" x2="138" y2="174"/>
+        <text class="lbl" data-slabel="0" x="40" y="298">Feed</text>
+      </g>
+
+      <!-- ============ 02 PREPRESS PLATE ============ -->
+      <g class="station" data-station="1">
+        <line class="ln--dim" x1="300" y1="40" x2="300" y2="120"/>
+        <line class="ln--dim" x1="420" y1="40" x2="420" y2="120"/>
+        <g data-plate>
+          <rect class="ln--brass" x="292" y="66" width="136" height="34" rx="1"/>
+          <line class="ln--brass" x1="300" y1="100" x2="300" y2="116"/>
+          <line class="ln--brass" x1="420" y1="100" x2="420" y2="116"/>
+          <line class="ln--brass" x1="292" y1="118" x2="428" y2="118"/>
+        </g>
+        <line class="ln--dim dash" x1="292" y1="284" x2="428" y2="284"/>
+        <text class="lbl" data-slabel="1" x="292" y="308">Plate</text>
+      </g>
+
+      <!-- ============ 03 INK ROLLERS ============ -->
+      <g class="station" data-station="2">
+        <g data-roller="top">
+          <circle class="ln" cx="620" cy="118" r="62"/>
+          <circle class="ln--dim" cx="620" cy="118" r="44"/>
+          <g class="ln--brass" data-spokes>
+            <line x1="620" y1="56" x2="620" y2="180"/>
+            <line x1="558" y1="118" x2="682" y2="118"/>
+            <line x1="576" y1="74" x2="664" y2="162"/>
+            <line x1="664" y1="74" x2="576" y2="162"/>
+          </g>
+        </g>
+        <g data-roller="bottom">
+          <circle class="ln" cx="620" cy="282" r="62"/>
+          <circle class="ln--dim" cx="620" cy="282" r="44"/>
+          <g class="ln--brass" data-spokes>
+            <line x1="620" y1="220" x2="620" y2="344"/>
+            <line x1="558" y1="282" x2="682" y2="282"/>
+            <line x1="576" y1="238" x2="664" y2="326"/>
+            <line x1="664" y1="238" x2="576" y2="326"/>
+          </g>
+        </g>
+        <text class="lbl" data-slabel="2" x="558" y="372">Ink rollers</text>
+      </g>
+
+      <!-- ============ 04 SCANNER ============ -->
+      <g class="station" data-station="3">
+        <line class="ln" x1="830" y1="70" x2="830" y2="330"/>
+        <line class="ln" x1="960" y1="70" x2="960" y2="330"/>
+        <line class="ln--dim" x1="830" y1="70" x2="960" y2="70"/>
+        <line class="ln--dim" x1="830" y1="330" x2="960" y2="330"/>
+        <line class="beamglow" data-beam-glow x1="840" y1="150" x2="840" y2="250"/>
+        <line class="beam" data-beam x1="840" y1="150" x2="840" y2="250"/>
+        <text class="lbl" data-slabel="3" x="830" y="356">Quality control</text>
+      </g>
+
+      <!-- ============ 05 DELIVERY ============ -->
+      <g class="station" data-station="4">
+        <path class="ln" d="M1050 262 L1160 262 L1160 138 L1050 138"/>
+        <g data-stack opacity="0">
+          <rect class="sheetface" x="1062" y="236" width="86" height="6" opacity="0.55"/>
+          <rect class="sheetface" x="1062" y="226" width="86" height="6" opacity="0.7"/>
+          <rect class="sheetface" x="1062" y="216" width="86" height="6" opacity="0.85"/>
+        </g>
+        <text class="lbl" data-slabel="4" x="1050" y="298">Delivery</text>
+      </g>
+
+      <!-- ============ THE SHEET ============ -->
+      <g data-sheet transform="translate(60,0)">
+        <rect class="sheetface" x="0" y="152" width="96" height="96" rx="1"/>
+        <!-- ink laid down in passes -->
+        <rect class="ink ink--k"        data-ink="1" x="12" y="166" width="40" height="4"/>
+        <rect class="ink ink--k"        data-ink="1" x="12" y="176" width="62" height="9"/>
+        <rect class="ink ink--halftone" data-ink="2" x="12" y="194" width="72" height="26"/>
+        <rect class="ink ink--foil"     data-ink="3" x="12" y="228" width="46" height="6"/>
+      </g>
+    </svg>
+
+    <!-- HUD -->
+    <div class="press__hud">
+      <div class="hud__num"><span data-hud-num>01</span> / 05</div>
+      <div>
+        <h2 class="hud__title" data-hud-title>Send us the file you have.</h2>
+        <p class="hud__body" data-hud-body>Whatever state it is in. AI, PDF, CDR or PSD. If it is in something else, send it anyway and we will tell you whether it will work.</p>
+      </div>
+      <div class="hud__meta">
+        <div>Est. 1995</div>
+        <div>Thirty-one years</div>
+        <div>Thirty-six organisations</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="press__track"></div>
+</section>
+
+<!-- ==================== OUTRO ==================== -->
+<section class="press-outro section--cta">
+  <div class="container" style="max-width:44rem">
+    <p class="eyebrow">The close</p>
+    <h2 class="display" style="font-size:var(--step-5); margin-top:var(--sp-5)">That is the whole machine.</h2>
+    <p class="lead" style="margin-top:var(--sp-5); margin-inline:auto; max-width:44ch">You were involved in one step of it. That is the offer.</p>
+    <div class="btn-row" style="justify-content:center; margin-top:var(--sp-7)">
+      <a class="btn btn--ink" href="#">
+        <span class="btn__label" data-text="Send us your file"><span>Send us your file</span></span>
+        <span class="btn__arrow"><i>&rarr;</i><i>&rarr;</i></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var gsap = window.gsap, ST = window.ScrollTrigger;
+
+  /* ---- Stage copy. Five stations, taken from the process in the copy. -- */
+  var STAGES = [
+    {
+      n: '01',
+      title: 'Send us the file you have.',
+      body: 'Whatever state it is in. AI, PDF, CDR or PSD. If it is in something else, send it anyway and we will tell you whether it will work.'
+    },
+    {
+      n: '02',
+      title: 'We check it before a plate is made.',
+      body: 'Bleed, resolution, colour mode, embedded fonts, die line. What will fail on press, said before it fails rather than after. Free, and yours to keep whether you print with us or not.'
+    },
+    {
+      n: '03',
+      title: 'Printed to the specification on file.',
+      body: 'Stock, ink values, finish, dimensions, folds. Recorded once, and every run after this one is measured against the record rather than against memory.'
+    },
+    {
+      n: '04',
+      title: 'Checked before it reaches you.',
+      body: 'The run is measured against that record before it is packed. This is the step you would otherwise be doing yourself, on a Tuesday, holding a proof against last year&rsquo;s.'
+    },
+    {
+      n: '05',
+      title: 'Delivered to the date on the quote.',
+      body: 'The date was the commitment, not an estimate. Thirty-one years, thirty-six organisations, ten sectors, and no reprints they had to ask for.'
+    }
+  ];
+
+  var hudNum   = document.querySelector('[data-hud-num]');
+  var hudTitle = document.querySelector('[data-hud-title]');
+  var hudBody  = document.querySelector('[data-hud-body]');
+  var rails    = document.querySelectorAll('[data-rail]');
+  var slabels  = document.querySelectorAll('[data-slabel]');
+  var current  = -1;
+  var first    = true;
+
+  function setStage(i) {
+    if (i === current) return;
+    current = i;
+    var s = STAGES[i];
+    if (hudNum) hudNum.textContent = s.n;
+    if (hudTitle) hudTitle.innerHTML = s.title;
+    if (hudBody) hudBody.innerHTML = s.body;
+    rails.forEach(function (r, ri) { r.dataset.on = String(ri === i); });
+    slabels.forEach(function (l, li) { l.classList.toggle('lbl--on', li === i); });
+    // Only animate on a genuine stage change. Animating the first render
+    // means a tween that never ticks leaves the HUD stuck invisible.
+    if (gsap && !reduce && !first) {
+      gsap.fromTo([hudTitle, hudBody],
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.06, overwrite: true });
+    }
+    first = false;
+  }
+  setStage(0);
+
+  if (reduce || !gsap || !ST) return;
+  gsap.registerPlugin(ST);
+
+  /* ---- Lenis ----------------------------------------------------------- */
+  if (typeof window.Lenis === 'function') {
+    var lenis = new window.Lenis({ duration: 1.05 });
+    lenis.on('scroll', ST.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  var sheet   = document.querySelector('[data-sheet]');
+  var plate   = document.querySelector('[data-plate]');
+  var spokes  = document.querySelectorAll('[data-spokes]');
+  var beam    = document.querySelector('[data-beam]');
+  var glow    = document.querySelector('[data-beam-glow]');
+  var stack   = document.querySelector('[data-stack]');
+  var inks    = { 1: document.querySelectorAll('[data-ink="1"]'),
+                  2: document.querySelectorAll('[data-ink="2"]'),
+                  3: document.querySelectorAll('[data-ink="3"]') };
+
+  gsap.set(plate, { y: -46 });
+  gsap.set(sheet, { x: 60 });
+
+  /* ---- One scrubbed timeline is the whole machine ---------------------- */
+  var tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '[data-press]',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.6,
+      onUpdate: function (self) {
+        // Five stations across the run.
+        var i = Math.min(4, Math.floor(self.progress * 5));
+        setStage(i);
+        // Rollers turn continuously with scroll.
+        spokes.forEach(function (g, gi) {
+          gsap.set(g, { rotation: self.progress * 900 * (gi === 0 ? 1 : -1), svgOrigin: gi === 0 ? '620 118' : '620 282' });
+        });
+      }
+    }
+  });
+
+  // 01 FILE  ·  sheet leaves the feed tray
+  tl.to(sheet, { x: 250, ease: 'none', duration: 1 })
+
+    // 02 PREPRESS  ·  plate comes down onto the sheet, then lifts
+    .to(sheet, { x: 312, ease: 'none', duration: 0.55 })
+    .to(plate, { y: 82, ease: 'power2.in', duration: 0.25 }, '<0.1')
+    .to(inks[1], { opacity: 1, duration: 0.12 }, '>-0.02')
+    .to(plate, { y: -46, ease: 'power2.out', duration: 0.25 })
+    .to(sheet, { x: 470, ease: 'none', duration: 0.45 }, '<')
+
+    // 03 COLOUR  ·  through the rollers, ink laid down in passes
+    .to(sheet, { x: 574, ease: 'none', duration: 0.6 })
+    .to(inks[2], { opacity: 1, duration: 0.2 }, '>-0.15')
+    .to(sheet, { x: 700, ease: 'none', duration: 0.6 })
+    .to(inks[3], { opacity: 1, duration: 0.2 }, '<0.2')
+
+    // 04 QUALITY CONTROL  ·  the beam sweeps the sheet
+    .to(sheet, { x: 838, ease: 'none', duration: 0.8 })
+    .to([beam, glow], { opacity: 1, duration: 0.15 }, '<0.35')
+    .to([beam, glow], { x: 118, ease: 'power1.inOut', duration: 0.7 }, '<')
+    .to([beam, glow], { opacity: 0, duration: 0.2 })
+
+    // 05 DELIVERY  ·  the sheet lands on the stack
+    .to(sheet, { x: 1050, ease: 'none', duration: 0.9 }, '<0.1')
+    .to(stack, { opacity: 1, duration: 0.3 }, '<0.45')
+    .to(sheet, { x: 1104, y: 58, ease: 'power2.in', duration: 0.4 })
+    .to(sheet, { opacity: 0, duration: 0.2 });
+
+  /* Station rings light as the sheet passes through them. */
+  document.querySelectorAll('.station').forEach(function (st, i) {
+    gsap.fromTo(st, { opacity: 0.45 }, {
+      opacity: 1, duration: 0.3,
+      scrollTrigger: {
+        trigger: '[data-press]',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate: function (self) {
+          var active = Math.min(4, Math.floor(self.progress * 5));
+          gsap.to(st, { opacity: i === active ? 1 : 0.4, duration: 0.35, overwrite: 'auto' });
+        }
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

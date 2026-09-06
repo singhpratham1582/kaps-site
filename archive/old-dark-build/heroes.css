@@ -1,0 +1,298 @@
+/* ==========================================================================
+   HERO VARIANTS · A / B / C
+   Brief: premium and spectacular on arrival. All three lean on material
+   rather than decoration: real foil that catches light, real depth with
+   perspective and shadow, real paper grain.
+   ========================================================================== */
+
+.hv { position: relative; min-height: 100svh; overflow: hidden; display: grid; align-items: center; }
+.hv[hidden] { display: none; }
+
+/* ---- Shared atmosphere -------------------------------------------------- */
+.grain {
+  position: absolute; inset: 0; z-index: 6;
+  pointer-events: none; opacity: 0.055;
+  mix-blend-mode: overlay;
+}
+.spot {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(760px circle at var(--sx, 50%) var(--sy, 40%),
+              rgba(194, 166, 97, 0.13), transparent 62%);
+  transition: background 240ms linear;
+}
+.vignette {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 45%, rgba(2, 6, 11, 0.72) 100%);
+}
+
+/* ---- Live foil ----------------------------------------------------------
+   A metallic ramp clipped to text. The highlight position follows the
+   cursor, so the type catches light the way a foiled sheet does when you
+   tilt it. This is the single most print-native premium device we have. */
+.foil {
+  background-image: linear-gradient(
+    100deg,
+    #5E4C20 0%,
+    #A98F52 12%,
+    #C2A661 22%,
+    #F8F0D6 33%,
+    #E0C87E 41%,
+    #8C7338 54%,
+    #C2A661 66%,
+    #F4E8C4 76%,
+    #B59A5C 88%,
+    #6E5A28 100%
+  );
+  background-size: 260% 260%;
+  background-position: var(--fx, 50%) var(--fy, 50%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .foil--idle { animation: foilDrift 9s var(--ease-in-out) infinite; }
+}
+@keyframes foilDrift {
+  0%, 100% { background-position: 28% 40%; }
+  50%      { background-position: 72% 60%; }
+}
+
+/* ==========================================================================
+   A · FOIL
+   One enormous foiled headline. Nothing else competes.
+   ========================================================================== */
+.hv-a { background: var(--ink-900); }
+.hv-a__inner { position: relative; z-index: 3; text-align: center; padding-inline: var(--gutter); }
+.hv-a__head {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3.5rem, 11.5vw, 11rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  margin-inline: auto;
+  max-width: 14ch;
+}
+.hv-a__rule { height: 1px; background: var(--rule); margin: var(--sp-8) auto 0; max-width: 30rem; }
+.hv-a__sub {
+  margin: var(--sp-6) auto 0;
+  max-width: 46ch;
+  font-size: var(--step-1);
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+.hv-a__meta {
+  position: absolute; z-index: 4;
+  font-family: var(--font-mono); font-size: 0.6875rem;
+  text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--text-faint);
+}
+.hv-a__meta--tl { top: 7rem; left: var(--gutter); }
+.hv-a__meta--tr { top: 7rem; right: var(--gutter); }
+.hv-a__meta--bl { bottom: 2.5rem; left: var(--gutter); }
+.hv-a__meta--br { bottom: 2.5rem; right: var(--gutter); }
+@media (max-width: 48rem) { .hv-a__meta { display: none; } }
+
+/* ==========================================================================
+   B · THE SHEET
+   A printed piece in real perspective, with thickness, shadow and a foil
+   panel that lights up as it turns. Tilts toward the cursor.
+   ========================================================================== */
+.hv-b { background: var(--ink-800); }
+.hv-b__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+  position: relative; z-index: 3;
+}
+@media (max-width: 68rem) { .hv-b__grid { grid-template-columns: 1fr; } }
+
+.stage3d { perspective: 1400px; perspective-origin: 50% 45%; }
+.sheet3d {
+  position: relative;
+  width: min(100%, 27rem);
+  aspect-ratio: 1 / 1.36;
+  margin-inline: auto;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Thickness: stacked layers behind the face */
+.sheet3d__layer {
+  position: absolute; inset: 0;
+  background: var(--paper-300);
+  border-radius: 2px;
+}
+.sheet3d__layer:nth-child(1) { transform: translateZ(-9px) translate(7px, 9px); background: #A8997C; }
+.sheet3d__layer:nth-child(2) { transform: translateZ(-6px) translate(4px, 6px); background: #BFB094; }
+.sheet3d__layer:nth-child(3) { transform: translateZ(-3px) translate(2px, 3px); background: var(--paper-400); }
+
+.sheet3d__face {
+  position: absolute; inset: 0;
+  background: linear-gradient(150deg, #FDFBF6 0%, var(--paper-200) 55%, #E6DECC 100%);
+  border-radius: 2px;
+  padding: 11% 10%;
+  display: flex; flex-direction: column;
+  box-shadow: 0 50px 90px -30px rgba(0, 0, 0, 0.8), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  color: var(--text-on-paper);
+  overflow: hidden;
+}
+/* The sheen that rakes across the paper as it tilts */
+.sheet3d__face::after {
+  content: "";
+  position: absolute; inset: -30%;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.55) 48%, transparent 60%);
+  transform: translateX(var(--rake, -40%));
+  pointer-events: none;
+}
+.sf__eyebrow {
+  font-family: var(--font-mono); font-size: 0.625rem;
+  text-transform: uppercase; letter-spacing: 0.22em; color: var(--clay-700);
+}
+.sf__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  line-height: 1.02; letter-spacing: -0.02em;
+  margin-top: 0.4em;
+}
+/* The foil panel, embossed into the sheet */
+.sf__foil {
+  margin-top: 9%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: linear-gradient(100deg, #7A6231, #C2A661 28%, #F8F0D6 44%, #C2A661 62%, #8C7338);
+  background-size: 240% 100%;
+  background-position: var(--foilpos, 50%) 50%;
+  color: #2A210C;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.sf__rules { margin-top: 9%; display: grid; gap: 0.4rem; }
+.sf__rules i { height: 5px; background: var(--paper-400); border-radius: 1px; }
+.sf__rules i:nth-child(2) { width: 88%; }
+.sf__rules i:nth-child(3) { width: 95%; }
+.sf__foot {
+  margin-top: auto; padding-top: 8%;
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 0.5625rem;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay-700);
+}
+
+/* ==========================================================================
+   C · THE FAN
+   Four printed pieces spread out of a stack. Abundance, choreographed.
+   ========================================================================== */
+.hv-c { background: var(--ink-900); }
+.hv-c__inner { position: relative; z-index: 3; text-align: center; padding-inline: var(--gutter); }
+.hv-c__head {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6.4vw, 5.5rem);
+  line-height: 1.02; letter-spacing: -0.03em;
+  max-width: 16ch; margin-inline: auto;
+}
+.fan {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  perspective: 1600px;
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-4);
+}
+.piece {
+  position: relative;
+  flex: none;
+  width: clamp(8rem, 12vw, 11.5rem);
+  aspect-ratio: 1 / 1.4;
+  margin-inline: clamp(-3.5rem, -3vw, -2rem);
+  border-radius: 2px;
+  background: linear-gradient(150deg, #FDFBF6, #F4EFE5 58%, #E4DBC8);
+  box-shadow: 0 42px 70px -26px rgba(0,0,0,0.9), 0 6px 18px -6px rgba(0,0,0,0.6);
+  padding: 11% 10%;
+  color: #0E1720;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 50% 130%;
+  will-change: transform;
+}
+.piece__tag {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.18em; color: #7E4F2F;
+}
+.piece__name {
+  font-family: var(--font-display); font-size: 1.05rem;
+  line-height: 1.12; margin-top: 0.35em; letter-spacing: -0.01em;
+}
+.piece__lines { margin-top: 10%; display: grid; gap: 0.26rem; }
+.piece__lines i { height: 3px; background: #D3C7B1; border-radius: 1px; }
+.piece__lines i:nth-child(2) { width: 80%; }
+.piece__bar {
+  margin-top: auto; height: 9px; border-radius: 1px;
+  background: linear-gradient(100deg, #7A6231, #C2A661 30%, #F8F0D6 46%, #C2A661 64%, #8C7338);
+}
+.piece--halftone::before {
+  content: ""; display: block; flex: none;
+  margin-top: 10%; aspect-ratio: 16/10; border-radius: 1px;
+  background:
+    radial-gradient(rgba(11,19,28,0.42) 1.1px, transparent 1.2px) 0 0 / 6px 6px,
+    linear-gradient(135deg, #E9E1D2, #D3C7B1);
+}
+.piece:nth-child(1) { transform: rotate(-13deg) translateY(52px); z-index: 1; }
+.piece:nth-child(2) { transform: rotate(-6.5deg) translateY(17px); z-index: 2; }
+.piece:nth-child(3) { transform: rotate(0deg)    translateY(0);    z-index: 3; }
+.piece:nth-child(4) { transform: rotate(6.5deg)  translateY(17px); z-index: 2; }
+.piece:nth-child(5) { transform: rotate(13deg)   translateY(52px); z-index: 1; }
+@media (max-width: 62rem) {
+  .piece:nth-child(1), .piece:nth-child(5) { display: none; }
+}
+
+.hv-c__sub {
+  margin: var(--sp-7) auto 0; max-width: 44ch;
+  color: var(--text-muted); font-size: var(--step-1); line-height: 1.7;
+}
+
+/* ---- Variant switcher (comparison chrome, not part of the site) --------- */
+.hvbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; gap: var(--sp-3); align-items: center;
+  padding: var(--sp-3) var(--gutter);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono); font-size: 0.6875rem;
+  text-transform: uppercase; letter-spacing: 0.14em;
+}
+.hvbar span { color: var(--text-faint); }
+.hvbar button {
+  background: none; border: 1px solid var(--rule); color: var(--text-muted);
+  padding: 0.4rem 0.85rem; border-radius: 2px; cursor: pointer;
+  font: inherit; text-transform: inherit; letter-spacing: inherit;
+  transition: all 200ms var(--ease-out);
+}
+.hvbar button[aria-pressed="true"] { border-color: var(--brass-500); color: var(--brass-300); }
+
+
+/* The fan opens with a CSS transition rather than a GSAP from() tween.
+   from() records its end state off the computed transform and can strand
+   the pieces stacked and invisible if it never ticks. This cannot. */
+.piece {
+  transition: transform 1.05s var(--ease-out), opacity 0.7s ease-out;
+}
+.fan.is-closed .piece {
+  transform: rotate(0deg) translateY(0) scale(0.9) !important;
+  opacity: 0;
+}
+.piece:nth-child(3) { transition-delay: 0s; }
+.piece:nth-child(2), .piece:nth-child(4) { transition-delay: 0.09s; }
+.piece:nth-child(1), .piece:nth-child(5) { transition-delay: 0.18s; }
+@media (prefers-reduced-motion: reduce) {
+  .piece { transition: none; }
+  .fan.is-closed .piece { transform: none !important; opacity: 1; }
+}
+
+/* Keep tall variants clear of the fixed switcher bar and the viewport edge. */
+.hv { padding-block: 6.5rem 3rem; }
+.hv-c__head { font-size: clamp(2.25rem, 5.4vw, 4.5rem); }
+.fan { margin-top: var(--sp-6); }
+.piece { width: clamp(7.5rem, 11vw, 10.5rem); }

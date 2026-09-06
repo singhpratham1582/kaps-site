@@ -1,0 +1,126 @@
+/* ==========================================================================
+   KAPS tokens  ·  v2.0  ·  deep blue
+   Generated from DESIGN.md.
+
+   v2.0 changes, all from direct feedback:
+   - Ground returns to blue. The cream build had genuinely low contrast and
+     the headings sat at the bottom of it.
+   - Headings move off Instrument Serif 400. It is a hairline display face:
+     beautiful at 100px, thin and hard to read everywhere else. Newsreader
+     at 500/600 has real stroke weight and was the pairing already approved.
+   - Every pair below is measured. Headings on the ground are 15.89:1.
+   ========================================================================== */
+
+:root {
+  /* ---- Ground. Blue, not near-black. -------------------------------- */
+  --blue-900: #05101F;   /* deepest band, footer */
+  --blue-800: #0A1B33;   /* primary ground */
+  --blue-700: #12263F;   /* raised surface, cards */
+  --blue-600: #1B3452;   /* hairline-adjacent, hover */
+
+  /* ---- Type on the ground ------------------------------------------ */
+  --on-blue:        #F2F6FB;   /* 15.89:1  AAA */
+  --on-blue-body:   #C8D4E2;   /* 11.48:1  AAA */
+  --on-blue-muted:  #9FB0C4;   /*  7.79:1  AAA */
+
+  /* ---- Paper, for light sections ----------------------------------- */
+  --paper:       #F7F4ED;
+  --paper-2:     #EFEBE1;
+  --ink:         #0A1B33;   /* 15.70:1 on paper, AAA */
+  --ink-body:    #3A4657;   /*  8.72:1 on paper, AAA */
+  --ink-muted:   #5A6879;   /*  5.18:1 on paper, AA  */
+
+  /* ---- Accent. One warm amber against all that blue. --------------- */
+  --accent:        #E0A458;   /* 7.90:1 on ground, AAA */
+  --accent-deep:   #D89A44;
+  --accent-onpaper:#8A5A1F;   /* 5.37:1 on paper, AA */
+
+  /* ---- Rules ------------------------------------------------------- */
+  --rule:        rgba(242, 246, 251, 0.14);
+  --rule-strong: rgba(242, 246, 251, 0.28);
+  --rule-paper:  rgba(10, 27, 51, 0.14);
+
+  /* ---- Semantic ---------------------------------------------------- */
+  --bg: var(--blue-800);
+  --text: var(--on-blue);
+  --text-2: var(--on-blue-body);
+  --text-3: var(--on-blue-muted);
+
+  /* ---- Type --------------------------------------------------------
+     Newsreader carries real weight at 500 and 600. That was the whole
+     readability problem: a 400-weight hairline serif on low contrast. */
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-body:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+  --w-display: 500;
+  --w-heading: 500;
+
+  --size-display: clamp(3rem, 6.6vw, 6rem);
+  --size-h1:      clamp(2.5rem, 5vw, 4.25rem);
+  --size-h2:      clamp(2rem, 3.6vw, 3.1rem);
+  --size-h3:      clamp(1.2rem, 1.7vw, 1.45rem);
+  --size-lead:    clamp(1.15rem, 1.35vw, 1.375rem);
+  --size-body:    1.0625rem;
+  --size-small:   0.9375rem;
+  --size-label:   0.8125rem;
+
+  --lh-display: 1.02;
+  --lh-heading: 1.1;
+  --lh-body:    1.68;
+  --lh-lead:    1.6;
+
+  --track-display: -0.025em;
+  --track-h1:      -0.022em;
+  --track-h2:      -0.018em;
+
+  /* ---- Space ------------------------------------------------------- */
+  --sp-1: 0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;
+  --sp-4: 1rem;     --sp-5: 1.5rem;   --sp-6: 2rem;
+  --sp-7: 3rem;     --sp-8: 4rem;     --sp-9: 6rem;
+  --sp-10: 8rem;    --sp-11: 10rem;   --sp-12: 12rem;
+
+  --section-y: clamp(4.5rem, 8vw, 8.5rem);
+  --gutter:    clamp(1.25rem, 4vw, 3rem);
+  --container:       74rem;
+  --container-wide:  86rem;
+  --measure:         64ch;
+  --measure-display: 19ch;
+
+  /* ---- Shape ------------------------------------------------------- */
+  /* Radius. 2px read as "we forgot to round anything" rather than as
+     restraint. A print house still wants crisp edges on anything that
+     represents paper, so photos and specimens stay tight while the
+     interface furniture (buttons, cards, fields) gets real curvature. */
+  --radius-0:    0;
+  --radius:      6px;
+  --radius-card: 14px;
+  --radius-lg:   24px;
+  --radius-pill: 999px;
+  --radius-photo: 10px;
+
+  /* ---- Elevation --------------------------------------------------- */
+  --shadow-sm:   0 1px 2px rgba(2, 8, 18, 0.30);
+  --shadow-md:   0 14px 34px -16px rgba(2, 8, 18, 0.60);
+  --shadow-lift: 0 40px 80px -32px rgba(2, 8, 18, 0.80);
+
+  /* ---- Motion ------------------------------------------------------ */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swap: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-mask: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast: 160ms;
+  --base: 280ms;
+  --slow: 560ms;
+  --rise: 10px;
+
+  /* ---- Button hover -------------------------------------------------
+     'Balanced 400', chosen in the button lab from three presets:
+       Brisk    300 / 250 / 20 / 170
+       Balanced 400 / 340 / 30 / 240   <- this one
+       Stately  520 / 460 / 40 / 320
+     Change the hover speed here and nowhere else. */
+  --btn-dur-wipe:    400ms;
+  --btn-dur-swap:    340ms;
+  --btn-delay-arrow:  30ms;
+  --btn-dur-color:   240ms;
+}

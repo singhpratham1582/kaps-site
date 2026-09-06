@@ -1,0 +1,809 @@
+/* ==========================================================================
+   KAPS base + components  ·  v1.0
+   Rebuilt from DESIGN.md. Nothing from the previous dark build survives.
+
+   Deliberately absent, per the Don't list: registration marks, density
+   wedges, halftone screens, foil gradients, all-caps micro-labels, step
+   numbers, scroll cues, decorative hairline grids.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg, video { display: block; max-width: 100%; height: auto; }
+button, input, select, textarea { font: inherit; color: inherit; }
+::selection { background: var(--accent-wash); color: var(--ink); }
+
+/* Focus is always visible. Never removed without a replacement. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--wide { max-width: var(--container-wide); }
+
+.section { padding-block: var(--section-y); position: relative; }
+.section--paper   { background: var(--paper);   color: var(--ink); }
+.section--surface { background: var(--surface); color: var(--ink); }
+.section--deep    { background: var(--surface-deep); color: var(--ink); }
+
+/* An ink band. Two per page at most, and they have to be earned. */
+.section--ink {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.section--ink .lead,
+.section--ink .body-2 { color: var(--on-ink-muted); }
+.section--ink .eyebrow { color: var(--accent-light); }
+.section--ink .rule { background: var(--hairline-on-ink); }
+
+/* Two sections on the same ground would otherwise leave a dead band. */
+.section--paper + .section--paper,
+.section--surface + .section--surface,
+.section--ink + .section--ink { padding-top: 0; }
+
+.measure { max-width: var(--measure); }
+.stack > * + * { margin-top: var(--flow, var(--sp-5)); }
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+.display, h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-wrap: balance;
+}
+.display {
+  font-size: var(--size-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-display);
+  max-width: var(--measure-display);
+}
+h1, .h1 {
+  font-size: var(--size-h1);
+  line-height: 1.02;
+  letter-spacing: var(--track-h1);
+  max-width: var(--measure-display);
+}
+h2, .h2 {
+  font-size: var(--size-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--track-h2);
+  max-width: 24ch;
+}
+/* h3 changes family rather than just size. The shift is the hierarchy. */
+h3, .h3 {
+  font-family: var(--font-body);
+  font-size: var(--size-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+p { text-wrap: pretty; }
+
+.lead {
+  font-size: var(--size-lead);
+  line-height: var(--lh-lead);
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  max-width: 54ch;
+}
+.body-2 { color: var(--ink-2); }
+.small  { font-size: var(--size-small); line-height: 1.55; }
+
+/* Sentence case. Never all-caps, never letterspaced. */
+.eyebrow {
+  font-size: var(--size-label);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--accent);
+  display: block;
+}
+.caption { font-size: var(--size-label); color: var(--ink-3); line-height: 1.5; }
+
+/* Numbers only. Not a label font. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--size-small);
+}
+
+.rule { height: 1px; background: var(--hairline); border: 0; }
+
+/* ==========================================================================
+   LINKS
+   A link is underlined at rest. One that only appears on hover is not a link.
+   ========================================================================== */
+a { color: inherit; }
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: color var(--fast) var(--ease), text-decoration-color var(--fast) var(--ease);
+}
+.link:hover {
+  color: var(--accent-deep);
+  text-decoration-color: currentColor;
+}
+.section--ink .link { color: var(--accent-light); }
+.section--ink .link:hover { color: var(--on-ink); }
+
+/* ==========================================================================
+   BUTTONS
+   Hover is a colour transition plus a 3px arrow slide. Nothing sweeps.
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.85rem 1.4rem;
+  font-family: var(--font-body);
+  font-size: var(--size-small);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: transparent;
+  transition: background var(--fast) var(--ease),
+              border-color var(--fast) var(--ease),
+              color var(--fast) var(--ease);
+}
+.btn__arrow {
+  transition: transform var(--base) var(--ease);
+  font-style: normal;
+}
+.btn:hover .btn__arrow { transform: translateX(3px); }
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+.btn--primary:hover { background: #22262C; border-color: #22262C; }
+
+.btn--secondary {
+  border-color: var(--hairline-strong);
+  color: var(--ink);
+}
+.btn--secondary:hover { background: var(--surface); border-color: var(--ink-3); }
+
+.btn--quiet {
+  padding-inline: 0;
+  color: var(--accent);
+}
+.btn--quiet:hover { color: var(--accent-deep); }
+
+/* On an ink band the polarity flips. */
+.section--ink .btn--primary {
+  background: var(--paper); color: var(--ink); border-color: var(--paper);
+}
+.section--ink .btn--primary:hover { background: #FFFFFF; border-color: #FFFFFF; }
+.section--ink .btn--secondary {
+  border-color: var(--hairline-on-ink); color: var(--on-ink);
+}
+.section--ink .btn--secondary:hover { background: rgba(250,248,243,0.08); border-color: var(--on-ink-muted); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; }
+
+/* ==========================================================================
+   CARDS
+   ========================================================================== */
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  padding: var(--sp-6);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--base) var(--ease);
+}
+.card:hover { border-color: var(--hairline-strong); }
+.card > * + * { margin-top: var(--sp-3); }
+.card p { color: var(--ink-2); }
+
+/* ==========================================================================
+   GRID
+   Asymmetry is the default. Three equal columns is banned.
+   ========================================================================== */
+.grid { display: grid; gap: var(--sp-6); }
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* 5/7 and 4/8 splits, with the aside sticky on long sections. */
+.split {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--sp-7) var(--sp-9);
+  align-items: start;
+}
+.split--narrow { grid-template-columns: 4fr 8fr; }
+.split__aside { position: sticky; top: var(--sp-8); }
+
+@media (max-width: 64rem) {
+  .split, .split--narrow { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .split__aside { position: static; }
+  .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 40rem) {
+  .grid--2, .grid--4 { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   SECTION HEADER
+   Eyebrow, heading, one optional lead. No number, no micro-sentence.
+   ========================================================================== */
+.sec-head > * + * { margin-top: var(--sp-4); }
+.sec-head .lead { margin-top: var(--sp-5); }
+
+/* ==========================================================================
+   PROSE LIST
+   One border per boundary. Never top and bottom on the same row.
+   ========================================================================== */
+.list { list-style: none; padding: 0; }
+.list > li {
+  padding-block: var(--sp-5);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+.list > li:last-child { border-bottom: 0; }
+
+/* A definition row: term left, value right, tabular. */
+.spec { list-style: none; padding: 0; }
+.spec > li {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--hairline);
+}
+.spec dt, .spec .spec__k { color: var(--ink-3); font-size: var(--size-small); }
+.spec dd, .spec .spec__v { margin: 0; font-variant-numeric: tabular-nums; }
+@media (max-width: 40rem) { .spec > li { grid-template-columns: 1fr; gap: var(--sp-1); } }
+
+/* ==========================================================================
+   ROSTER
+   The client names, set as type in a real grid. No marquee, no logo wall
+   until real files with permission exist, no sector pills.
+   ========================================================================== */
+.roster {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--hairline);
+}
+.roster__name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  padding: var(--sp-5) var(--sp-5) var(--sp-5) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+@media (max-width: 64rem) { .roster { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 40rem) { .roster { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   FORMS
+   Full border, not a bottom rule. Bottom-rule inputs look elegant and
+   test badly.
+   ========================================================================== */
+.field { display: block; }
+.field + .field { margin-top: var(--sp-5); }
+.field__label {
+  display: block;
+  font-size: var(--size-label);
+  font-weight: 500;
+  color: var(--ink-2);
+  margin-bottom: var(--sp-2);
+}
+.field__input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  color: var(--ink);
+  transition: border-color var(--fast) var(--ease);
+}
+.field__input::placeholder { color: var(--ink-3); }
+.field__input:focus-visible { border-color: var(--accent); }
+textarea.field__input { resize: vertical; min-height: 7rem; }
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--hairline);
+}
+.header__inner {
+  display: flex; align-items: center; gap: var(--sp-6);
+  padding-block: var(--sp-4);
+}
+.logo { display: inline-block; line-height: 0; }
+.logo img { height: 1.6rem; width: auto; }
+
+.nav { display: flex; align-items: center; gap: var(--sp-5); margin-left: auto; }
+.nav a:not(.btn) {
+  font-size: var(--size-small);
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color var(--fast) var(--ease);
+}
+.nav a:not(.btn):hover { color: var(--ink); }
+.nav a[aria-current="page"] { color: var(--accent); }
+
+.nav-toggle {
+  display: none; margin-left: auto;
+  background: none; border: 1px solid var(--hairline-strong);
+  color: var(--ink); border-radius: var(--radius);
+  padding: 0.5rem 0.8rem; cursor: pointer;
+  font-size: var(--size-label); font-weight: 500;
+}
+@media (max-width: 60rem) {
+  .nav-toggle { display: block; }
+  .nav {
+    display: none;
+    position: absolute; left: 0; right: 0; top: 100%;
+    flex-direction: column; align-items: flex-start; gap: var(--sp-4);
+    padding: var(--sp-5) var(--gutter) var(--sp-6);
+    background: var(--paper);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .header[data-open="true"] .nav { display: flex; }
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.footer {
+  background: var(--ink);
+  color: var(--on-ink);
+  padding-block: var(--sp-9) var(--sp-6);
+}
+.footer__top {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: var(--sp-7) var(--sp-6);
+}
+.footer__col h4 {
+  font-family: var(--font-body);
+  font-size: var(--size-label);
+  font-weight: 500;
+  color: var(--on-ink-muted);
+  margin-bottom: var(--sp-4);
+}
+.footer__col ul { list-style: none; padding: 0; display: grid; gap: var(--sp-3); }
+.footer__col a {
+  color: var(--on-ink); text-decoration: none; font-size: var(--size-small);
+  transition: color var(--fast) var(--ease);
+}
+.footer__col a:hover { color: var(--accent-light); }
+.footer__bottom {
+  margin-top: var(--sp-8); padding-top: var(--sp-5);
+  border-top: 1px solid var(--hairline-on-ink);
+  display: flex; flex-wrap: wrap; gap: var(--sp-4) var(--sp-6);
+  justify-content: space-between;
+  font-size: var(--size-label); color: var(--on-ink-muted);
+}
+@media (max-width: 64rem) { .footer__top { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 40rem) { .footer__top { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   MOTION
+   One reveal. Fires once. Content is visible if it never fires.
+   ========================================================================== */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(var(--rise));
+  transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease);
+}
+html.js .reveal.is-in { opacity: 1; transform: none; }
+
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--ink); color: var(--on-ink);
+  padding: var(--sp-3) var(--sp-4); z-index: 100; border-radius: var(--radius);
+}
+.skip:focus { left: var(--gutter); top: var(--sp-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html.js .reveal { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   PAGE COMPONENTS
+   ========================================================================== */
+
+.footer__tagline {
+  font-family: var(--font-display);
+  font-size: var(--size-h2);
+  line-height: 1.1;
+  letter-spacing: var(--track-h2);
+  color: var(--on-ink);
+  margin-top: var(--sp-5);
+}
+
+/* ---- Hero --------------------------------------------------------------- */
+.hero { padding-block: clamp(4.5rem, 9vw, 8rem) clamp(3.5rem, 6vw, 6rem); }
+.hero__grid {
+  display: grid;
+  grid-template-columns: 6fr 5fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+@media (max-width: 68rem) { .hero__grid { grid-template-columns: 1fr; } }
+
+/* ---- Figures ------------------------------------------------------------ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-6);
+  border-top: 1px solid var(--hairline);
+  padding-top: var(--sp-6);
+}
+.stat__figure {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.stat__label { margin-top: var(--sp-3); font-size: var(--size-label); color: var(--ink-3); }
+.section--ink .stats { border-color: var(--hairline-on-ink); }
+.section--ink .stat__label { color: var(--on-ink-muted); }
+@media (max-width: 48rem) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---- Flow: the process, named not numbered ------------------------------ */
+.flow { border-top: 1px solid var(--hairline); }
+.flow__item { padding-block: var(--sp-6); border-bottom: 1px solid var(--hairline); }
+.flow__item h3 { max-width: 30ch; }
+.flow__item p { margin-top: var(--sp-3); color: var(--ink-2); max-width: var(--measure); }
+.flow__gets {
+  margin-top: var(--sp-4);
+  font-size: var(--size-label);
+  color: var(--accent);
+}
+
+/* ---- Pills: product inventories ----------------------------------------- */
+.pills { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); list-style: none; padding: 0; }
+.pills li {
+  font-size: var(--size-small);
+  color: var(--ink-2);
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+.section--ink .pills li {
+  color: var(--on-ink); border-color: var(--hairline-on-ink); background: transparent;
+}
+
+/* ---- Route cards --------------------------------------------------------- */
+.route {
+  display: block; text-decoration: none; color: inherit;
+  padding: var(--sp-6);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  background: var(--paper-raised);
+  transition: border-color var(--base) var(--ease), transform var(--base) var(--ease);
+}
+.route:hover { border-color: var(--ink-3); transform: translateY(-2px); }
+.route p { margin-top: var(--sp-3); color: var(--ink-2); }
+.route__go { display: inline-block; margin-top: var(--sp-5); color: var(--accent); font-size: var(--size-small); font-weight: 500; }
+.route:hover .route__go { color: var(--accent-deep); }
+.section--ink .route { background: transparent; border-color: var(--hairline-on-ink); }
+.section--ink .route p { color: var(--on-ink-muted); }
+.section--ink .route__go { color: var(--accent-light); }
+
+/* ---- Kits ---------------------------------------------------------------- */
+.kit { display: flex; flex-direction: column; }
+.kit__contents { list-style: none; padding: 0; margin-top: var(--sp-5); }
+.kit__contents li {
+  padding-block: var(--sp-3);
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--size-small);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.kit__contents li:last-child { border-bottom: 0; }
+.kit--marked { border-color: var(--accent); }
+.kit__flag {
+  align-self: flex-start;
+  font-size: var(--size-label);
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: var(--sp-2);
+}
+
+/* ---- FAQ ----------------------------------------------------------------- */
+.faq { border-top: 1px solid var(--hairline); }
+.faq__item { border-bottom: 1px solid var(--hairline); }
+.faq__q {
+  width: 100%; display: flex; justify-content: space-between; align-items: baseline;
+  gap: var(--sp-5); padding: var(--sp-5) 0;
+  background: none; border: 0; text-align: left; cursor: pointer;
+  font-family: var(--font-body); font-size: var(--size-h3); font-weight: 600;
+  color: inherit;
+}
+.faq__sign { color: var(--accent); flex: none; transition: transform var(--base) var(--ease); font-weight: 400; }
+.faq__item[data-open="true"] .faq__sign { transform: rotate(45deg); }
+.faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--base) var(--ease); }
+.faq__item[data-open="true"] .faq__a { grid-template-rows: 1fr; }
+.faq__a > div { overflow: hidden; }
+.faq__a p { color: var(--ink-2); max-width: var(--measure); padding-bottom: var(--sp-5); }
+
+/* ---- Travel tiles: the roster, moving sideways --------------------------- */
+.tile {
+  flex: none;
+  width: 19rem;
+  padding: var(--sp-6);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  background: var(--paper-raised);
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 11rem;
+}
+.tile__name { font-family: var(--font-display); font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.02em; }
+.tile__sector { font-size: var(--size-label); color: var(--ink-3); }
+
+/* ---- Note block ----------------------------------------------------------- */
+.note {
+  background: var(--accent-wash);
+  border-radius: var(--radius-card);
+  padding: var(--sp-5) var(--sp-6);
+}
+.note p { color: var(--ink-2); }
+
+/* ---- Finishes ------------------------------------------------------------- */
+.finish { border-bottom: 1px solid var(--hairline); padding-block: var(--sp-6); }
+.finish p { margin-top: var(--sp-3); color: var(--ink-2); max-width: var(--measure); }
+
+/* ==========================================================================
+   PAPER GRAIN
+   A flat hex value reads as a screen. Stock has fibre. This is a fine
+   turbulence overlay at 4%, multiplied over everything including the ink
+   bands, so the whole site sits on a surface rather than a colour.
+   ========================================================================== */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.042;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ==========================================================================
+   SPECIMENS
+   Printed pieces, drawn to true paper proportions. These are the site's
+   visuals: there is no photography, and a rendered specimen is honest
+   where a stock photo of somebody else's print would not be.
+   ========================================================================== */
+.specimen {
+  position: relative;
+  border-radius: var(--radius-card);
+  background: linear-gradient(155deg, #FFFFFF 0%, var(--paper) 52%, #EFE9DC 100%);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--base) var(--ease), box-shadow var(--base) var(--ease);
+}
+.specimen:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+/* True proportions. A printer's site should not fake paper sizes. */
+.specimen--a4   { aspect-ratio: 1 / 1.414; padding: 11% 10%; }
+.specimen--card { aspect-ratio: 1.75 / 1;  padding: 11% 9%;  }
+.specimen--inv  { aspect-ratio: 1 / 1.45;  padding: 13% 11%; }
+.specimen--sq   { aspect-ratio: 1 / 1;     padding: 11% 10%; }
+
+.specimen__label {
+  font-size: var(--size-label);
+  color: var(--ink-3);
+}
+.specimen__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-top: var(--sp-2);
+}
+.specimen__foot {
+  margin-top: auto;
+  padding-top: var(--sp-5);
+  font-size: var(--size-label);
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+/* Ruled lines standing in for body copy on a specimen. */
+/* flex:none, or aspect-ratio children collapse inside the flex column. */
+.specimen__rules { margin-top: var(--sp-5); display: grid; gap: 0.34rem; flex: none; }
+.specimen__rules i { height: 4px; border-radius: 1px; background: #C9BDA6; display: block; }
+.specimen__rules i:nth-child(2) { width: 88%; }
+.specimen__rules i:nth-child(3) { width: 94%; }
+.specimen__rules i:nth-child(4) { width: 62%; }
+/* A foil band, the one place the accent is allowed to fill an area. */
+.specimen__foil {
+  margin-top: var(--sp-5);
+  flex: none;
+  height: 10px;
+  border-radius: 1px;
+  background: linear-gradient(100deg, var(--accent-deep), var(--accent) 30%, #E4C79C 48%, var(--accent) 66%, var(--accent-deep));
+}
+/* An emboss: raised from behind, so it catches light at the top edge. */
+.specimen__emboss {
+  margin-top: var(--sp-5);
+  flex: none;
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: 2px;
+  background: var(--paper);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(20,22,26,0.10), 0 1px 0 rgba(255,255,255,0.7);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+/* A halftone plate, the only image-like surface we can honestly draw. */
+.specimen__plate {
+  margin-top: var(--sp-5);
+  flex: none;
+  aspect-ratio: 16 / 10;
+  border-radius: 1px;
+  /* A halftone plate. The dots have to be big enough and dark enough to
+     read as a printed image area, otherwise the specimen looks blank. */
+  background-color: #E4DCCB;
+  background-image:
+    radial-gradient(circle at center, rgba(20, 22, 26, 0.62) 1.7px, transparent 1.9px),
+    radial-gradient(circle at center, rgba(20, 22, 26, 0.30) 1.1px, transparent 1.3px),
+    linear-gradient(145deg, #EFE9DC 0%, #CFC3AC 100%);
+  background-size: 7px 7px, 7px 7px, 100% 100%;
+  background-position: 0 0, 3.5px 3.5px, 0 0;
+}
+
+/* A pair of specimens, offset, so the aside is never a void. */
+.specimen-pair { position: relative; }
+.specimen-pair .specimen:nth-child(2) {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  width: 56%;
+  z-index: 2;
+}
+@media (max-width: 64rem) {
+  .specimen-pair .specimen:nth-child(2) { position: static; width: 100%; margin-top: var(--sp-5); }
+}
+
+/* ==========================================================================
+   STICKY ASIDE
+   The aside was ending after 250px and leaving a 900px void beside a long
+   scrolling column. It now holds real content and is vertically centred.
+   ========================================================================== */
+/* Simple sticky. Forcing a viewport min-height here CREATED voids on any
+   section whose scrolling column was shorter than a screen. The fix for a
+   thin aside is real content in it, not artificial height. */
+.pin-col { position: sticky; top: var(--sp-8); }
+@media (max-width: 64rem) { .pin-col { position: static; } }
+
+/* The offset specimen hangs below its box, so reserve the space rather
+   than letting it land on the caption underneath. */
+.specimen-pair { padding-bottom: 4.5rem; }
+@media (max-width: 64rem) { .specimen-pair { padding-bottom: 0; } }
+
+/* ---- Card, warmed up ----------------------------------------------------- */
+.card {
+  background: linear-gradient(158deg, #FFFFFF 0%, #FCFAF6 60%, var(--paper) 100%);
+  transition: border-color var(--base) var(--ease),
+              box-shadow var(--base) var(--ease),
+              transform var(--base) var(--ease);
+}
+.card:hover {
+  border-color: var(--hairline-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ---- The artifact line, given weight ------------------------------------- */
+.flow__gets {
+  display: inline-block;
+  margin-top: var(--sp-4);
+  padding-left: var(--sp-4);
+  border-left: 2px solid var(--accent);
+  font-size: var(--size-small);
+  color: var(--ink-2);
+}
+
+/* ==========================================================================
+   INTERACTION
+   Every interactive thing on the page answers the cursor. Nothing pulses,
+   nothing glows, nothing follows you.
+   ========================================================================== */
+
+/* Nav: a rule draws under the item from the left. */
+.nav a:not(.btn) { position: relative; padding-block: 0.35rem; }
+.nav a:not(.btn)::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--base) var(--ease);
+}
+.nav a:not(.btn):hover::after,
+.nav a[aria-current="page"]::after { transform: scaleX(1); }
+
+/* The header lifts off the page once you leave the top. */
+.header { transition: box-shadow var(--base) var(--ease), border-color var(--base) var(--ease); }
+.header[data-scrolled="true"] { box-shadow: 0 1px 24px -12px rgba(20, 22, 26, 0.28); }
+
+/* Roster: a name steps toward the reader and takes the accent. */
+.roster__name {
+  transition: color var(--fast) var(--ease), padding-left var(--base) var(--ease);
+  padding-left: 0;
+}
+.roster__name:hover { color: var(--accent); padding-left: var(--sp-3); }
+
+/* Client tiles on the travelling rail. */
+.tile {
+  transition: border-color var(--base) var(--ease),
+              box-shadow var(--base) var(--ease),
+              transform var(--base) var(--ease);
+}
+.tile:hover {
+  border-color: var(--hairline-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+/* Pills answer the cursor too, so a long inventory is not inert. */
+.pills li { transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease); }
+.pills li:hover { border-color: var(--ink-3); color: var(--ink); }
+
+/* Flow rows warm slightly as you read down them. */
+.flow__item { transition: background var(--base) var(--ease); }
+.flow__item:hover { background: color-mix(in srgb, var(--accent-wash) 55%, transparent); }
+
+/* FAQ question tracks the cursor. */
+.faq__q { transition: color var(--fast) var(--ease); }
+.faq__q:hover { color: var(--accent); }
+
+/* Buttons get a hairline of light along the top edge, the way a pressed
+   surface catches it. Subtle enough to feel rather than see. */
+.btn--primary { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14); }
+.btn--primary:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22); }

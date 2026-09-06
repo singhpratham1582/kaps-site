@@ -1,0 +1,1334 @@
+/* ==========================================================================
+   KAPS base  ·  v2.0  ·  blue-first
+   The ground is deep blue. Paper sections are the exception, not the rule.
+   v1.0 (paper-first) is kept at archive/base-v1-paper.css.bak
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--blue-800);
+  color: var(--on-blue-body);
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg, video { display: block; max-width: 100%; height: auto; }
+button, input, select, textarea { font: inherit; color: inherit; }
+::selection { background: var(--accent); color: var(--blue-900); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.container--wide { max-width: var(--container-wide); }
+
+.section { padding-block: var(--section-y); position: relative; }
+.section--deep   { background: var(--blue-900); }
+.section--raised { background: var(--blue-700); }
+
+/* Paper is the exception now. Everything inside it flips polarity. */
+.section--paper { background: var(--paper); color: var(--ink-body); }
+.section--paper h1, .section--paper h2, .section--paper h3,
+.section--paper .display, .section--paper .h2, .section--paper .h3 { color: var(--ink); }
+.section--paper .lead { color: var(--ink-body); }
+.section--paper .eyebrow { color: var(--accent-onpaper); }
+.section--paper .caption { color: var(--ink-muted); }
+.section--paper .rule { background: var(--rule-paper); }
+
+.section--paper + .section--paper,
+.section--deep + .section--deep { padding-top: 0; }
+
+.measure { max-width: var(--measure); }
+
+/* ==========================================================================
+   TYPOGRAPHY
+   Headings carry weight 500. A 400 hairline serif was the readability bug.
+   ========================================================================== */
+.display, h1, h2 {
+  font-family: var(--font-display);
+  font-weight: var(--w-display);
+  color: var(--on-blue);
+  text-wrap: balance;
+}
+.display {
+  font-size: var(--size-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-display);
+  max-width: var(--measure-display);
+}
+h1, .h1 {
+  font-size: var(--size-h1);
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-h1);
+  max-width: var(--measure-display);
+}
+h2, .h2 {
+  font-size: var(--size-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--track-h2);
+  max-width: 22ch;
+}
+h3, .h3 {
+  font-family: var(--font-body);
+  font-size: var(--size-h3);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -0.008em;
+  color: var(--on-blue);
+  text-wrap: balance;
+}
+
+p { text-wrap: pretty; }
+
+.lead { font-size: var(--size-lead); line-height: var(--lh-lead); color: var(--on-blue-body); max-width: 52ch; }
+.body-2 { color: var(--on-blue-body); }
+.small  { font-size: var(--size-small); }
+
+.eyebrow { display: block; font-size: var(--size-label); font-weight: 500; letter-spacing: 0.01em; color: var(--accent); }
+.caption { font-size: var(--size-label); color: var(--on-blue-muted); line-height: 1.55; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--size-small); }
+
+.rule { height: 1px; background: var(--rule); border: 0; }
+
+/* ==========================================================================
+   LINKS
+   ========================================================================== */
+a { color: inherit; }
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: color var(--fast) var(--ease), text-decoration-color var(--fast) var(--ease);
+}
+.link:hover { color: var(--on-blue); text-decoration-color: currentColor; }
+.section--paper .link { color: var(--accent-onpaper); }
+.section--paper .link:hover { color: var(--ink); }
+
+/* ==========================================================================
+   BUTTONS
+   The hover finalised in the button lab: three coordinated parts, run at the
+   "Balanced 400" timing that was chosen from the three speed presets.
+
+     1 · the wipe   a solid fill rises from the bottom edge
+     2 · the swap   the label slides up and out, its duplicate rises into place
+     3 · the arrow  the first glyph exits right as the second arrives from left
+
+   Markup this depends on:
+     <a class="btn btn--primary" href="…">
+       <span class="btn__label" data-text="Send us your file">
+         <span>Send us your file</span>
+       </span>
+       <span class="btn__arrow" aria-hidden="true"><i>&rarr;</i><i>&rarr;</i></span>
+     </a>
+
+   No sheen and no sweep on the primary. That was built, reviewed and removed.
+   ========================================================================== */
+.btn {
+  --btn-bg: transparent;
+  --btn-wipe: transparent;
+  --btn-fg: var(--on-blue);
+  --btn-fg-hover: var(--on-blue);
+  --btn-border: transparent;
+  --btn-border-hover: transparent;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex; align-items: center; gap: 0.85em;
+  padding: 0.9rem 1.6rem;
+  font-family: var(--font-body);
+  font-size: var(--size-small); font-weight: 500; line-height: 1.2;
+  text-decoration: none; cursor: pointer;
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  transition: color var(--btn-dur-color) var(--ease),
+              border-color var(--btn-dur-color) var(--ease);
+}
+
+/* 1 · the wipe */
+.btn::before {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+  background: var(--btn-wipe);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform var(--btn-dur-wipe) var(--ease-swap);
+}
+.btn:hover::before,
+.btn:focus-visible::before { transform: scaleY(1); }
+.btn:hover, .btn:focus-visible {
+  color: var(--btn-fg-hover);
+  border-color: var(--btn-border-hover);
+}
+
+/* 2 · the label swap */
+.btn__label { position: relative; display: block; overflow: hidden; }
+.btn__label > span {
+  display: block;
+  transition: transform var(--btn-dur-swap) var(--ease-swap);
+}
+.btn__label::after {
+  content: attr(data-text);
+  position: absolute; left: 0; top: 0; width: 100%;
+  transform: translateY(115%);
+  transition: transform var(--btn-dur-swap) var(--ease-swap);
+}
+.btn:hover .btn__label > span,
+.btn:focus-visible .btn__label > span { transform: translateY(-115%); }
+.btn:hover .btn__label::after,
+.btn:focus-visible .btn__label::after { transform: translateY(0); }
+
+/* 3 · the arrow travel */
+.btn__arrow {
+  position: relative; display: block; flex: none;
+  width: 1.15em; height: 1.15em; overflow: hidden;
+}
+.btn__arrow i {
+  position: absolute; inset: 0;
+  font-style: normal; display: block;
+  transition: transform var(--btn-dur-swap) var(--ease-swap);
+  transition-delay: var(--btn-delay-arrow);
+}
+.btn__arrow i:nth-child(2) { transform: translateX(-150%); }
+.btn:hover .btn__arrow i:nth-child(1),
+.btn:focus-visible .btn__arrow i:nth-child(1) { transform: translateX(150%); }
+.btn:hover .btn__arrow i:nth-child(2),
+.btn:focus-visible .btn__arrow i:nth-child(2) { transform: translateX(0); }
+
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.btn:active { transform: translateY(1px); }
+
+/* ---- Variants ---------------------------------------------------------- */
+.btn--primary {
+  --btn-bg: var(--accent);
+  --btn-wipe: #F4CE9B;
+  --btn-fg: var(--blue-900);
+  --btn-fg-hover: var(--blue-900);
+  --btn-border: var(--accent);
+  --btn-border-hover: #F4CE9B;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.30);
+}
+
+.btn--secondary {
+  --btn-wipe: rgba(242, 246, 251, 0.10);
+  --btn-border: var(--rule-strong);
+  --btn-border-hover: var(--accent);
+}
+
+/* On cream the secondary carries a solid fill rather than sitting
+   transparent, so the ruled ground of the close does not read through it. */
+.section--paper .btn--secondary {
+  --btn-bg: var(--paper);
+  --btn-wipe: rgba(10, 27, 51, 0.05);
+  --btn-fg: var(--ink);
+  --btn-fg-hover: var(--ink);
+  --btn-border: var(--rule-paper);
+  --btn-border-hover: var(--ink-muted);
+}
+
+/* The swap needs two label positions to move between. Without it the
+   duplicate would simply sit on top of the original. */
+@media (prefers-reduced-motion: reduce) {
+  .btn::before, .btn__label > span, .btn__label::after, .btn__arrow i {
+    transition: none !important;
+  }
+  .btn:hover::before, .btn:focus-visible::before { transform: scaleY(1); }
+}
+
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; }
+
+/* ==========================================================================
+   CARDS
+   ========================================================================== */
+.card {
+  background: var(--blue-700); border: 1px solid var(--rule);
+  border-radius: var(--radius-card); padding: var(--sp-6);
+  transition: border-color var(--base) var(--ease), background var(--base) var(--ease),
+              transform var(--base) var(--ease), box-shadow var(--base) var(--ease);
+}
+.card:hover { border-color: var(--rule-strong); background: var(--blue-600); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.card > * + * { margin-top: var(--sp-3); }
+.card p { color: var(--on-blue-body); }
+.section--paper .card { background: #FFFFFF; border-color: var(--rule-paper); }
+.section--paper .card:hover { background: #FFFFFF; box-shadow: 0 14px 34px -18px rgba(10, 27, 51, 0.30); }
+.section--paper .card p { color: var(--ink-body); }
+
+/* ==========================================================================
+   GRID. Asymmetry is the default. Three equal columns stays banned.
+   ========================================================================== */
+.grid { display: grid; gap: var(--sp-6); }
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.split { display: grid; grid-template-columns: 5fr 7fr; gap: var(--sp-7) var(--sp-9); align-items: start; }
+.split--narrow { grid-template-columns: 4fr 8fr; }
+
+/* Sticky column rests in the upper-middle of the viewport rather than
+   jammed against the very top, which is what read as broken. */
+.pin-col { position: sticky; top: 18vh; }
+
+@media (max-width: 64rem) {
+  .split, .split--narrow { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .pin-col { position: static; }
+  .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 40rem) { .grid--2, .grid--4 { grid-template-columns: 1fr; } }
+
+.sec-head > * + * { margin-top: var(--sp-4); }
+.sec-head .lead { margin-top: var(--sp-5); }
+
+/* ==========================================================================
+   LISTS
+   ========================================================================== */
+.list { list-style: none; padding: 0; }
+.list > li { padding-block: var(--sp-5); border-bottom: 1px solid var(--rule); color: var(--on-blue-body); max-width: var(--measure); }
+.list > li:last-child { border-bottom: 0; }
+.section--paper .list > li { border-color: var(--rule-paper); color: var(--ink-body); }
+
+.spec { list-style: none; padding: 0; }
+.spec > li { display: grid; grid-template-columns: 11rem 1fr; gap: var(--sp-4); padding-block: var(--sp-4); border-bottom: 1px solid var(--rule); }
+.spec__k { color: var(--on-blue-muted); font-size: var(--size-small); }
+.spec__v { font-variant-numeric: tabular-nums; color: var(--on-blue); }
+.section--paper .spec > li { border-color: var(--rule-paper); }
+.section--paper .spec__k { color: var(--ink-muted); }
+.section--paper .spec__v { color: var(--ink); }
+@media (max-width: 40rem) { .spec > li { grid-template-columns: 1fr; gap: var(--sp-1); } }
+
+/* ==========================================================================
+   FIGURES
+   ========================================================================== */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-6); border-top: 1px solid var(--rule); padding-top: var(--sp-6); }
+.stat__figure { font-family: var(--font-display); font-weight: var(--w-display); font-size: clamp(2.5rem, 4vw, 3.5rem); line-height: 1; letter-spacing: -0.03em; color: var(--on-blue); }
+.stat__label { margin-top: var(--sp-3); font-size: var(--size-label); color: var(--on-blue-muted); }
+.section--paper .stats { border-color: var(--rule-paper); }
+.section--paper .stat__figure { color: var(--ink); }
+.section--paper .stat__label { color: var(--ink-muted); }
+@media (max-width: 48rem) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ==========================================================================
+   FLOW, the process
+   ========================================================================== */
+.flow { border-top: 1px solid var(--rule); }
+.flow__item { padding-block: var(--sp-6); border-bottom: 1px solid var(--rule); transition: background var(--base) var(--ease); }
+.flow__item:hover { background: rgba(242, 246, 251, 0.03); }
+.flow__item p { margin-top: var(--sp-3); color: var(--on-blue-body); max-width: var(--measure); }
+.flow__gets { display: inline-block; margin-top: var(--sp-4); padding-left: var(--sp-4); border-left: 2px solid var(--accent); font-size: var(--size-small); color: var(--on-blue-muted); }
+.section--paper .flow, .section--paper .flow__item { border-color: var(--rule-paper); }
+.section--paper .flow__item:hover { background: rgba(10, 27, 51, 0.03); }
+.section--paper .flow__item p { color: var(--ink-body); }
+.section--paper .flow__gets { border-color: var(--accent-onpaper); color: var(--ink-muted); }
+
+/* ==========================================================================
+   PILLS
+   ========================================================================== */
+.pills { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); list-style: none; padding: 0; }
+.pills li { font-size: var(--size-small); color: var(--on-blue-body); padding: 0.35rem 0.75rem; border: 1px solid var(--rule); border-radius: var(--radius); transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease); }
+.pills li:hover { border-color: var(--accent); color: var(--on-blue); }
+.section--paper .pills li { color: var(--ink-body); border-color: var(--rule-paper); background: #FFFFFF; }
+
+/* ==========================================================================
+   ROUTE CARDS
+   ========================================================================== */
+.route { display: block; text-decoration: none; color: inherit; padding: var(--sp-6); border: 1px solid var(--rule); border-radius: var(--radius-card); background: var(--blue-700); transition: border-color var(--base) var(--ease), transform var(--base) var(--ease), box-shadow var(--base) var(--ease); }
+.route:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.route p { margin-top: var(--sp-3); color: var(--on-blue-body); }
+.route__go { display: inline-block; margin-top: var(--sp-5); color: var(--accent); font-size: var(--size-small); font-weight: 500; }
+
+/* ==========================================================================
+   KITS
+   ========================================================================== */
+.kit { display: flex; flex-direction: column; }
+.kit__contents { list-style: none; padding: 0; margin-top: var(--sp-5); }
+.kit__contents li { padding-block: var(--sp-3); border-bottom: 1px solid var(--rule); font-size: var(--size-small); color: var(--on-blue-body); font-variant-numeric: tabular-nums; }
+.kit__contents li:last-child { border-bottom: 0; }
+.kit--marked { border-color: var(--accent); }
+.kit__flag { align-self: flex-start; font-size: var(--size-label); color: var(--accent); font-weight: 500; }
+.section--paper .kit__contents li { border-color: var(--rule-paper); color: var(--ink-body); }
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+.faq { border-top: 1px solid var(--rule); }
+.faq__item { border-bottom: 1px solid var(--rule); }
+.faq__q { width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-5); padding: var(--sp-5) 0; background: none; border: 0; text-align: left; cursor: pointer; font-family: var(--font-body); font-size: var(--size-h3); font-weight: 600; color: var(--on-blue); transition: color var(--fast) var(--ease); }
+.faq__q:hover { color: var(--accent); }
+.faq__sign { color: var(--accent); flex: none; font-weight: 400; transition: transform var(--base) var(--ease); }
+.faq__item[data-open="true"] .faq__sign { transform: rotate(45deg); }
+.faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--base) var(--ease); }
+.faq__item[data-open="true"] .faq__a { grid-template-rows: 1fr; }
+.faq__a > div { overflow: hidden; }
+.faq__a p { color: var(--on-blue-body); max-width: var(--measure); padding-bottom: var(--sp-5); }
+.section--paper .faq, .section--paper .faq__item { border-color: var(--rule-paper); }
+.section--paper .faq__q { color: var(--ink); }
+.section--paper .faq__a p { color: var(--ink-body); }
+
+/* ==========================================================================
+   ROSTER
+   ========================================================================== */
+.roster { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--rule); }
+.roster__name {
+  font-family: var(--font-display); font-weight: var(--w-display);
+  font-size: 1.3rem; line-height: 1.25; letter-spacing: -0.015em; color: var(--on-blue);
+  padding: var(--sp-5) var(--sp-5) var(--sp-5) 0; border-bottom: 1px solid var(--rule);
+  transition: color var(--fast) var(--ease), padding-left var(--base) var(--ease);
+}
+.roster__name:hover { color: var(--accent); padding-left: var(--sp-3); }
+.section--paper .roster, .section--paper .roster__name { border-color: var(--rule-paper); }
+.section--paper .roster__name { color: var(--ink); }
+@media (max-width: 64rem) { .roster { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 40rem) { .roster { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   NOTE, FINISH
+   ========================================================================== */
+.note { background: var(--blue-700); border-left: 2px solid var(--accent); border-radius: var(--radius); padding: var(--sp-5) var(--sp-6); }
+.note p { color: var(--on-blue-body); }
+.section--paper .note { background: #FFFFFF; border-left-color: var(--accent-onpaper); }
+.section--paper .note p { color: var(--ink-body); }
+
+.finish { border-bottom: 1px solid var(--rule); padding-block: var(--sp-6); }
+.finish p { margin-top: var(--sp-3); color: var(--on-blue-body); max-width: var(--measure); }
+.section--paper .finish { border-color: var(--rule-paper); }
+.section--paper .finish p { color: var(--ink-body); }
+
+/* ==========================================================================
+   FORMS
+   ========================================================================== */
+.field { display: block; }
+.field + .field { margin-top: var(--sp-5); }
+.field__label { display: block; font-size: var(--size-label); font-weight: 500; color: var(--on-blue-muted); margin-bottom: var(--sp-2); }
+.field__input { width: 100%; padding: 0.8rem 0.95rem; background: var(--blue-700); border: 1px solid var(--rule-strong); border-radius: var(--radius); color: var(--on-blue); transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease); }
+.field__input::placeholder { color: var(--on-blue-muted); }
+.field__input:focus-visible { border-color: var(--accent); background: var(--blue-600); }
+textarea.field__input { resize: vertical; min-height: 7rem; }
+.section--paper .field__label { color: var(--ink-muted); }
+.section--paper .field__input { background: #FFFFFF; border-color: var(--rule-paper); color: var(--ink); }
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--blue-800) 86%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--rule);
+  transition: box-shadow var(--base) var(--ease);
+}
+.header[data-scrolled="true"] { box-shadow: 0 10px 30px -18px rgba(2, 8, 18, 0.9); }
+.header__inner { display: flex; align-items: center; gap: var(--sp-6); padding-block: var(--sp-4); }
+.logo { display: inline-block; line-height: 0; }
+/* The wordmark artwork is black, so it inverts to sit on the blue. */
+.logo img { height: 1.6rem; width: auto; filter: invert(1); }
+
+.nav { display: flex; align-items: center; gap: var(--sp-5); margin-left: auto; }
+.nav a:not(.btn) { position: relative; padding-block: 0.35rem; font-size: var(--size-small); color: var(--on-blue-body); text-decoration: none; transition: color var(--fast) var(--ease); }
+.nav a:not(.btn)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left center; transition: transform var(--base) var(--ease); }
+.nav a:not(.btn):hover { color: var(--on-blue); }
+.nav a:not(.btn):hover::after, .nav a[aria-current="page"]::after { transform: scaleX(1); }
+.nav a[aria-current="page"] { color: var(--accent); }
+
+.nav-toggle { display: none; margin-left: auto; background: none; border: 1px solid var(--rule-strong); color: var(--on-blue); border-radius: var(--radius); padding: 0.5rem 0.8rem; cursor: pointer; font-size: var(--size-label); font-weight: 500; }
+@media (max-width: 60rem) {
+  .nav-toggle { display: block; }
+  .nav { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: flex-start; gap: var(--sp-4); padding: var(--sp-5) var(--gutter) var(--sp-6); background: var(--blue-900); border-bottom: 1px solid var(--rule); }
+  .header[data-open="true"] .nav { display: flex; }
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.footer { background: var(--blue-900); padding-block: var(--sp-9) var(--sp-6); border-top: 1px solid var(--rule); }
+.footer__top { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: var(--sp-7) var(--sp-6); }
+.footer__tagline { font-family: var(--font-display); font-weight: var(--w-display); font-size: var(--size-h2); line-height: 1.1; letter-spacing: var(--track-h2); color: var(--accent); margin-top: var(--sp-5); }
+.footer__col h4 { font-size: var(--size-label); font-weight: 500; color: var(--on-blue-muted); margin-bottom: var(--sp-4); }
+.footer__col ul { list-style: none; padding: 0; display: grid; gap: var(--sp-3); }
+.footer__col a { color: var(--on-blue-body); text-decoration: none; font-size: var(--size-small); transition: color var(--fast) var(--ease); }
+.footer__col a:hover { color: var(--accent); }
+.footer__bottom { margin-top: var(--sp-8); padding-top: var(--sp-5); border-top: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: var(--sp-4) var(--sp-6); justify-content: space-between; font-size: var(--size-label); color: var(--on-blue-muted); }
+@media (max-width: 64rem) { .footer__top { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 40rem) { .footer__top { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero { padding-block: clamp(4.5rem, 9vw, 8rem) clamp(3.5rem, 6vw, 6rem); }
+.hero__grid { display: grid; grid-template-columns: 6fr 5fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+@media (max-width: 68rem) { .hero__grid { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   SPECIMENS
+   Printed pieces at true paper proportions. These are placeholders for
+   real photography and are replaced the moment photographs exist.
+   ========================================================================== */
+.specimen {
+  position: relative; border-radius: var(--radius-card);
+  background: linear-gradient(155deg, #FFFFFF 0%, var(--paper) 55%, #E8E2D5 100%);
+  color: var(--ink); box-shadow: var(--shadow-lift);
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: transform var(--base) var(--ease), box-shadow var(--base) var(--ease);
+}
+.specimen:hover { transform: translateY(-5px); }
+.specimen--a4   { aspect-ratio: 1 / 1.414; padding: 11% 10%; }
+.specimen--card { aspect-ratio: 1.75 / 1;  padding: 11% 9%;  }
+.specimen--inv  { aspect-ratio: 1 / 1.45;  padding: 13% 11%; }
+.specimen--sq   { aspect-ratio: 1 / 1;     padding: 11% 10%; }
+.specimen__label { font-size: var(--size-label); color: var(--ink-muted); }
+.specimen__title { font-family: var(--font-display); font-weight: var(--w-display); font-size: clamp(1.3rem, 2vw, 1.9rem); line-height: 1.08; letter-spacing: -0.02em; margin-top: var(--sp-2); color: var(--ink); }
+.specimen__foot { margin-top: auto; padding-top: var(--sp-5); font-size: var(--size-label); color: var(--ink-muted); line-height: 1.5; }
+.specimen__rules { margin-top: var(--sp-5); display: grid; gap: 0.34rem; flex: none; }
+.specimen__rules i { height: 4px; border-radius: 1px; background: #C9BDA6; display: block; }
+.specimen__rules i:nth-child(2) { width: 88%; }
+.specimen__rules i:nth-child(3) { width: 94%; }
+.specimen__rules i:nth-child(4) { width: 62%; }
+.specimen__foil { margin-top: var(--sp-5); flex: none; height: 10px; border-radius: 1px; background: linear-gradient(100deg, #8A5A1F, var(--accent) 32%, #F3DCB4 50%, var(--accent) 68%, #8A5A1F); }
+.specimen__emboss { margin-top: var(--sp-5); flex: none; padding: var(--sp-4) var(--sp-5); border-radius: 2px; background: var(--paper); box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(10,27,51,0.12), 0 1px 0 rgba(255,255,255,0.7); font-family: var(--font-display); font-weight: var(--w-display); font-size: 1.15rem; }
+.specimen__plate {
+  margin-top: var(--sp-5); flex: none; aspect-ratio: 16 / 10; border-radius: 1px;
+  background-color: #E4DCCB;
+  background-image:
+    radial-gradient(circle at center, rgba(10, 27, 51, 0.62) 1.7px, transparent 1.9px),
+    radial-gradient(circle at center, rgba(10, 27, 51, 0.30) 1.1px, transparent 1.3px),
+    linear-gradient(145deg, #EFE9DC 0%, #CFC3AC 100%);
+  background-size: 7px 7px, 7px 7px, 100% 100%;
+  background-position: 0 0, 3.5px 3.5px, 0 0;
+}
+.specimen-pair { position: relative; padding-bottom: 4.5rem; }
+.specimen-pair .specimen:nth-child(2) { position: absolute; right: -6%; bottom: 0; width: 56%; z-index: 2; }
+@media (max-width: 64rem) {
+  .specimen-pair { padding-bottom: 0; }
+  .specimen-pair .specimen:nth-child(2) { position: static; width: 100%; margin-top: var(--sp-5); }
+}
+
+/* ==========================================================================
+   CLIENT TILES
+   ========================================================================== */
+.tile {
+  flex: none; width: 19rem; padding: var(--sp-6);
+  border: 1px solid var(--rule); border-radius: var(--radius-card);
+  background: var(--blue-700);
+  display: flex; flex-direction: column; justify-content: space-between; min-height: 11rem;
+  transition: border-color var(--base) var(--ease), transform var(--base) var(--ease), box-shadow var(--base) var(--ease);
+}
+.tile:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.tile__name { font-family: var(--font-display); font-weight: var(--w-display); font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.02em; color: var(--on-blue); }
+.tile__sector { font-size: var(--size-label); color: var(--on-blue-muted); }
+
+/* ==========================================================================
+   MOTION BASE
+   ========================================================================== */
+html.js .reveal { opacity: 0; transform: translateY(var(--rise)); transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease); }
+html.js .reveal.is-in { opacity: 1; transform: none; }
+
+.skip { position: absolute; left: -9999px; background: var(--accent); color: var(--blue-900); padding: var(--sp-3) var(--sp-4); z-index: 100; border-radius: var(--radius); }
+.skip:focus { left: var(--gutter); top: var(--sp-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html.js .reveal { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   SECTION CONTRAST, corrected
+   Converting every paper section to blue left the page with blue-800 next
+   to blue-900, a 2% difference nobody can see. There is now a genuinely
+   lighter surface and a paper band, so sections actually separate.
+   ========================================================================== */
+.section--alt { background: var(--blue-700); }
+.section--alt .card { background: var(--blue-600); }
+.section--alt .tile { background: var(--blue-600); }
+.section--alt .route { background: var(--blue-600); }
+.section--alt .field__input { background: var(--blue-600); }
+.section--alt .note { background: var(--blue-600); }
+
+/* A hairline at every ground change, so the seam is deliberate. */
+.section--alt + .section,
+.section + .section--alt,
+.section--deep + .section--alt,
+.section--alt + .section--deep { border-top: 1px solid var(--rule); }
+
+/* ==========================================================================
+   PHOTOGRAPHY
+   Real photographs, from Unsplash. Credits in assets/img/photo/credits.json.
+
+   Raw stock on a branded ground looks like stock. Every photo is graded
+   toward the palette: desaturated, contrast lifted, then a blue multiply
+   over the top so it reads as one family rather than a gallery.
+   ========================================================================== */
+.photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--blue-700);
+  isolation: isolate;
+}
+.photo img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: grayscale(0.42) contrast(1.06) brightness(0.88) saturate(0.85);
+  transition: transform 900ms var(--ease), filter var(--base) var(--ease);
+  will-change: transform;
+}
+/* The blue grade. Multiply keeps the shadows honest instead of washing them. */
+.photo::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(175deg, rgba(10, 27, 51, 0.42) 0%, rgba(10, 27, 51, 0.66) 100%);
+  mix-blend-mode: multiply;
+}
+/* A warm rake, so the grade is not flat blue. */
+.photo::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(120deg, rgba(224, 164, 88, 0.10) 0%, transparent 55%);
+}
+.photo:hover img { transform: scale(1.04); filter: grayscale(0.18) contrast(1.08) brightness(0.95) saturate(1); }
+
+/* Aspect presets, so a photo never dictates layout. */
+.photo--wide    { aspect-ratio: 16 / 9; }
+.photo--tall    { aspect-ratio: 3 / 4; }
+.photo--square  { aspect-ratio: 1 / 1; }
+.photo--hero    { aspect-ratio: 4 / 5; }
+.photo--band    { aspect-ratio: 21 / 9; }
+
+/* A caption sits under the image, never over it. */
+.photo-fig { margin: 0; }
+.photo-fig figcaption { margin-top: var(--sp-3); font-size: var(--size-label); color: var(--on-blue-muted); }
+
+/* Full-bleed image band, the one place a photo runs edge to edge. */
+.band { position: relative; overflow: hidden; }
+.band .photo { border-radius: 0; }
+.band__over {
+  position: absolute; inset: 0; z-index: 3;
+  display: grid; align-content: center;
+  padding-block: var(--sp-9);
+}
+.band__over .container { position: relative; }
+
+/* ==========================================================================
+   Photography, part 2  ·  layout components
+   The heroes on interior pages were text on both sides and nothing else.
+   These are the pieces that put a real image into a page without
+   restructuring the grid underneath it.
+   ========================================================================== */
+
+/* Break out of .container to the full viewport width. */
+.bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* --- The band. One cinematic image, edge to edge. ------------------------ */
+.band { position: relative; overflow: hidden; background: var(--blue-900); }
+.band .photo { border-radius: 0; }
+.band--tall .photo { aspect-ratio: 16 / 9; }
+.band--short .photo { aspect-ratio: 32 / 9; }
+
+/* Bands that carry type need a real scrim, not the standard grade. A
+   21:9 photograph is mostly midtone, and midtone eats white text. */
+.band--text .photo::after {
+  background:
+    linear-gradient(90deg, rgba(5, 16, 31, 0.92) 0%, rgba(5, 16, 31, 0.66) 46%, rgba(5, 16, 31, 0.30) 100%),
+    linear-gradient(180deg, rgba(5, 16, 31, 0.34) 0%, rgba(5, 16, 31, 0.52) 100%);
+  mix-blend-mode: normal;
+}
+.band--text .photo img { filter: grayscale(0.55) contrast(1.04) brightness(0.72) saturate(0.7); }
+.band--text .photo:hover img { transform: none; }
+
+.band__over {
+  position: absolute; inset: 0; z-index: 3;
+  display: grid; align-content: center;
+  padding-block: var(--sp-9);
+}
+.band__over .container { position: relative; }
+.band__over h2, .band__over h3 { max-width: 20ch; }
+.band__over p { max-width: 46ch; color: var(--on-blue-body); }
+
+/* A caption pinned to the bottom corner, the way a photo credit sits in print. */
+.band__caption {
+  position: absolute; z-index: 4;
+  right: var(--gutter); bottom: var(--sp-5);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(242, 246, 251, 0.55);
+}
+
+/* Room for the parallax to travel without exposing an edge. */
+.band .photo img { height: 116%; margin-top: -8%; }
+@media (prefers-reduced-motion: reduce) {
+  .band .photo img { height: 100%; margin-top: 0; }
+}
+
+/* --- The duo. Two photos, offset, the way a spread is laid out. ---------- */
+.photo-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+}
+.photo-duo > :nth-child(2) { margin-top: var(--sp-9); }
+@media (max-width: 720px) {
+  .photo-duo { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .photo-duo > :nth-child(2) { margin-top: 0; }
+}
+
+/* --- The strip. Three images in a row, for a range or a catalogue. ------- */
+.photo-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+}
+@media (max-width: 720px) { .photo-strip { grid-template-columns: 1fr 1fr; } }
+
+/* --- Attribution. Unsplash terms require the photographer be credited. --- */
+.credits {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--sp-5);
+  margin-top: var(--sp-7);
+  font-size: 0.75rem; line-height: 1.7;
+  color: var(--on-blue-muted);
+}
+.credits a { color: var(--on-blue-muted); text-decoration: underline; text-underline-offset: 2px; }
+.credits a:hover { color: var(--accent); }
+
+/* --- The work card. A real photograph carrying the specimen's caption. --- */
+.work { margin: 0; }
+.work figcaption { margin-top: var(--sp-4); }
+.work__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+}
+.work__title {
+  font-family: var(--font-display); font-weight: var(--w-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.12;
+  letter-spacing: -0.018em; color: var(--on-blue);
+  margin-top: var(--sp-2);
+}
+.work__foot {
+  margin-top: var(--sp-2);
+  font-size: var(--size-label); line-height: 1.5;
+  color: var(--on-blue-muted);
+}
+
+/* ==========================================================================
+   Photography, part 3  ·  grading correction
+   First pass sat the images ON the blue rather than IN it. High-key stock
+   (white tabletops, grey backdrops) stayed pale no matter what the multiply
+   did, so every photo read as a light rectangle pasted onto a dark page.
+   Two changes: pull the exposure down properly, and add a vignette so the
+   edges fall off into the ground instead of stopping at a hard border.
+   ========================================================================== */
+.photo img {
+  filter: grayscale(0.30) contrast(1.16) brightness(0.74) saturate(0.88);
+}
+.photo::after {
+  background: linear-gradient(175deg, rgba(10, 27, 51, 0.50) 0%, rgba(5, 16, 31, 0.74) 100%);
+}
+.photo::before {
+  background:
+    radial-gradient(115% 90% at 50% 32%, transparent 38%, rgba(5, 16, 31, 0.58) 100%),
+    linear-gradient(120deg, rgba(224, 164, 88, 0.11) 0%, transparent 58%);
+}
+.photo:hover img {
+  transform: scale(1.04);
+  filter: grayscale(0.10) contrast(1.14) brightness(0.86) saturate(1);
+}
+
+/* Quiet bands carry no type, but they still need to belong to the page. */
+.band:not(.band--text) .photo img { filter: grayscale(0.42) contrast(1.14) brightness(0.66) saturate(0.8); }
+.band:not(.band--text) .photo::before {
+  background:
+    radial-gradient(120% 100% at 50% 40%, transparent 30%, rgba(5, 16, 31, 0.72) 100%),
+    linear-gradient(120deg, rgba(224, 164, 88, 0.09) 0%, transparent 58%);
+}
+/* A band butts against a section above and below. Feather both edges so the
+   seam disappears rather than reading as a hard horizontal line. */
+.band::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(10, 27, 51, 0.85) 0%, transparent 14%),
+    linear-gradient(0deg,   rgba(10, 27, 51, 0.85) 0%, transparent 14%);
+}
+.band--text::after {
+  background:
+    linear-gradient(180deg, rgba(10, 27, 51, 0.75) 0%, transparent 18%),
+    linear-gradient(0deg,   rgba(10, 27, 51, 0.75) 0%, transparent 18%);
+}
+
+/* ==========================================================================
+   Tiles  ·  height correction
+   The roster tiles were 240px tall holding two lines of text, which put a
+   150px hole in the middle of every card. Height follows content now, and
+   an amber rule at the top gives the card something to be.
+   ========================================================================== */
+.tile {
+  min-height: 0;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  width: 17rem;
+  position: relative;
+}
+.tile::before {
+  content: "";
+  display: block;
+  width: 1.75rem; height: 2px;
+  background: var(--accent);
+  margin-bottom: var(--sp-4);
+  transition: width var(--base) var(--ease);
+}
+.tile:hover::before { width: 3.5rem; }
+.tile__name { font-size: 1.35rem; }
+.travel .tile { min-height: 0; width: 17rem; }
+
+/* A section that holds one short row does not need a full section's padding.
+   Full padding on a two-line band is what read as a void rather than as
+   breathing room. */
+.section--tight { padding-block: clamp(3rem, 5vw, 5.5rem); }
+
+/* ==========================================================================
+   RADIUS PASS
+   The 2px scale read as an oversight rather than as restraint. Interface
+   furniture gets real curvature; anything standing in for a sheet of paper
+   keeps a tight corner, because paper does.
+   ========================================================================== */
+.btn { border-radius: var(--radius-pill); }
+.card { border-radius: var(--radius-card); }
+.tile { border-radius: var(--radius-card); }
+.pills li { border-radius: var(--radius-pill); padding: 0.4rem 0.9rem; }
+.field__input { border-radius: var(--radius); }
+.note { border-radius: var(--radius); }
+.photo { border-radius: var(--radius-photo); }
+.photo--hero { border-radius: var(--radius-card); }
+.band .photo { border-radius: 0; }
+.kit { border-radius: var(--radius-card); }
+
+/* ==========================================================================
+   PAPER SECTIONS  ·  the new components
+   Cream is the counter-ground. Every component that gained a blue-only
+   colour in the photography passes needs its paper polarity here, or the
+   section renders as white-on-cream and disappears.
+   ========================================================================== */
+.section--paper .photo { background: #E4DED1; }
+.section--paper .photo img {
+  filter: grayscale(0.22) contrast(1.05) brightness(1.02) saturate(0.94);
+}
+.section--paper .photo::after {
+  background: linear-gradient(175deg, rgba(247, 244, 237, 0.10) 0%, rgba(10, 27, 51, 0.14) 100%);
+  mix-blend-mode: multiply;
+}
+.section--paper .photo::before {
+  background:
+    radial-gradient(115% 90% at 50% 32%, transparent 52%, rgba(10, 27, 51, 0.16) 100%),
+    linear-gradient(120deg, rgba(224, 164, 88, 0.14) 0%, transparent 58%);
+}
+.section--paper .photo:hover img { filter: grayscale(0) contrast(1.06) brightness(1.05) saturate(1.03); }
+.section--paper .photo-fig figcaption { color: var(--ink-muted); }
+
+.section--paper .work__label { color: var(--accent-onpaper); }
+.section--paper .work__title { color: var(--ink); }
+.section--paper .work__foot  { color: var(--ink-muted); }
+
+.section--paper .tile { background: #FFFFFF; border-color: var(--rule-paper); }
+.section--paper .tile__name { color: var(--ink); }
+.section--paper .tile__sector { color: var(--ink-muted); }
+.section--paper .tile:hover { border-color: var(--accent-onpaper); box-shadow: 0 14px 34px -18px rgba(10, 27, 51, 0.30); }
+
+.section--paper .body-2, .section--paper p { color: var(--ink-body); }
+.section--paper .small { color: var(--ink-muted); }
+.section--paper .stat__figure { color: var(--ink); }
+
+/* ==========================================================================
+   FLOAT
+   A slow vertical drift on small paper artefacts, so a card looks like it
+   is resting on air rather than nailed to the page. Two-part: the element
+   floats, and its shadow breathes with it.
+   ========================================================================== */
+@keyframes kaps-float {
+  0%, 100% { transform: translateY(0) rotate(var(--float-rot, 0deg)); }
+  50%      { transform: translateY(var(--float-y, -14px)) rotate(var(--float-rot, 0deg)); }
+}
+.float {
+  animation: kaps-float var(--float-dur, 7s) var(--ease) infinite;
+  animation-delay: var(--float-delay, 0s);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) { .float { animation: none; } }
+
+/* ==========================================================================
+   CHIPS
+   Small cream cards that rest over a photograph and drift. They carry a real
+   specification, not decoration: this is the paper the piece is printed on.
+   ========================================================================== */
+.stage-photo { position: relative; }
+.chip {
+  position: absolute; z-index: 4;
+  min-width: 8.5rem;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: 4px;
+  background: linear-gradient(158deg, #FFFDF8 0%, var(--paper) 62%, #EAE3D5 100%);
+  box-shadow:
+    0 26px 46px -22px rgba(2, 8, 18, 0.85),
+    0 2px 4px rgba(2, 8, 18, 0.28);
+}
+.chip__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent-onpaper);
+}
+.chip__val {
+  display: block; margin-top: 2px;
+  font-family: var(--font-display); font-weight: var(--w-display);
+  font-size: 1.0625rem; line-height: 1.15; color: var(--ink);
+}
+.chip--tl { top: 8%;  left: -9%; }
+.chip--br { bottom: 12%; right: -8%; }
+@media (max-width: 64rem) {
+  .chip--tl { left: -2%; }
+  .chip--br { right: -2%; }
+}
+@media (max-width: 30rem) { .chip { display: none; } }
+
+/* ==========================================================================
+   Bands  ·  grading correction
+   brightness(0.72) under a 92% scrim made every band a dark rectangle. A
+   photograph of gold foil that reads as grey has no reason to be on the page.
+   The left edge stays heavy because that is where the type sits; the rest of
+   the frame is allowed to be an actual photograph.
+   ========================================================================== */
+.band--text .photo img { filter: grayscale(0.34) contrast(1.09) brightness(0.86) saturate(0.86); }
+.band--text .photo::after {
+  background:
+    linear-gradient(90deg, rgba(5, 16, 31, 0.94) 0%, rgba(5, 16, 31, 0.74) 42%, rgba(5, 16, 31, 0.20) 100%),
+    linear-gradient(180deg, rgba(5, 16, 31, 0.20) 0%, rgba(5, 16, 31, 0.40) 100%);
+  mix-blend-mode: normal;
+}
+/* For bands where the colour of the material is the point: foil, ink, stock. */
+.band--warm .photo img { filter: grayscale(0) contrast(1.12) brightness(0.94) saturate(1.06); }
+.band--warm .photo::after {
+  background:
+    linear-gradient(90deg, rgba(5, 16, 31, 0.93) 0%, rgba(5, 16, 31, 0.66) 44%, rgba(5, 16, 31, 0.12) 100%),
+    linear-gradient(180deg, rgba(5, 16, 31, 0.14) 0%, rgba(5, 16, 31, 0.34) 100%);
+}
+
+/* Photographs on cream need weight, not brightness. brightness(1.02) on a
+   high-key image put a pale rectangle on a pale ground. */
+.section--paper .photo img { filter: grayscale(0.16) contrast(1.14) brightness(0.95) saturate(1); }
+.section--paper .photo::after {
+  background: linear-gradient(175deg, rgba(10, 27, 51, 0.04) 0%, rgba(10, 27, 51, 0.20) 100%);
+}
+
+/* The footer mark is larger than the header's and stays white. It used to
+   carry a second invert(1) on its wrapper, which cancelled the one on the
+   image and rendered the logo black on a near-black ground. */
+.logo--footer img { height: 2.1rem; }
+
+/* ==========================================================================
+   FIGURES
+   A full-width band of numerals. Replaces the split that put a four-line
+   heading in one column and a short stat block in the other, which left a
+   150px hole on the right of the section at every width above 64rem.
+
+   The numerals are the content here, so they get display scale. The rules
+   between them are the structure, so there is exactly one per boundary.
+   ========================================================================== */
+.figures {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+  margin-top: var(--sp-8);
+}
+.figure {
+  padding: var(--sp-7) var(--sp-6) var(--sp-6) 0;
+  border-right: 1px solid var(--rule);
+  position: relative;
+}
+.figure:last-child { border-right: 0; padding-right: 0; }
+.figure::before {
+  content: "";
+  position: absolute; top: -1px; left: 0;
+  width: 2.25rem; height: 2px;
+  background: var(--accent);
+  transition: width var(--base) var(--ease);
+}
+.figure:hover::before { width: 4.5rem; }
+.figure__n {
+  display: block;
+  font-family: var(--font-display); font-weight: var(--w-display);
+  font-size: clamp(3rem, 6vw, 5.25rem);
+  line-height: 0.92; letter-spacing: -0.03em;
+  color: var(--on-blue);
+  font-variant-numeric: tabular-nums;
+}
+.figure__l {
+  display: block; margin-top: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--accent);
+}
+.figure__note {
+  display: block; margin-top: var(--sp-2);
+  font-size: var(--size-label); line-height: 1.5;
+  color: var(--on-blue-muted);
+  max-width: 22ch;
+}
+.section--paper .figure { border-color: var(--rule-paper); }
+.section--paper .figures { border-color: var(--rule-paper); }
+.section--paper .figure__n { color: var(--ink); }
+.section--paper .figure__l { color: var(--accent-onpaper); }
+.section--paper .figure__note { color: var(--ink-muted); }
+
+@media (max-width: 62rem) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .figure:nth-child(2) { border-right: 0; padding-right: 0; }
+  .figure:nth-child(3), .figure:nth-child(4) { border-top: 1px solid var(--rule); }
+}
+@media (max-width: 34rem) {
+  .figures { grid-template-columns: 1fr; }
+  .figure { border-right: 0; padding-right: 0; border-top: 1px solid var(--rule); }
+  .figure:first-child { border-top: 0; }
+}
+
+/* ==========================================================================
+   ROSTER
+   Thirty-six organisations on file is the claim, so the card is a filing
+   card: cream stock on the blue ground, a ledger rule at the head, the name
+   in the display face. Splide carries them, because a marquee is what this
+   is, and the house rule puts marquees on Splide.
+
+   This replaced a GSAP pinned horizontal scroll that fought the page.
+   ========================================================================== */
+.marquee-band { overflow: hidden; }
+.marquee { margin-block: var(--sp-8) var(--sp-7); }
+.marquee .splide__slide { padding-right: var(--sp-4); }
+
+.rcard {
+  position: relative;
+  height: 100%;
+  min-height: 12.5rem;
+  padding: var(--sp-6) var(--sp-5) var(--sp-5);
+  border-radius: var(--radius-card);
+  background: linear-gradient(158deg, #FFFDF8 0%, var(--paper) 62%, #EAE3D5 100%);
+  color: var(--ink);
+  display: flex; flex-direction: column;
+  box-shadow: 0 26px 48px -26px rgba(2, 8, 18, 0.80), 0 1px 3px rgba(2, 8, 18, 0.22);
+  transition: transform var(--base) var(--ease), box-shadow var(--base) var(--ease);
+}
+/* The ledger rule at the head of a filing card. */
+.rcard::before {
+  content: "";
+  position: absolute; left: var(--sp-5); right: var(--sp-5); top: var(--sp-5);
+  height: 2px; background: var(--accent-onpaper); opacity: 0.55;
+}
+.rcard__sector {
+  font-family: var(--font-mono);
+  font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent-onpaper);
+}
+.rcard__name {
+  margin-top: var(--sp-3);
+  font-family: var(--font-display); font-weight: var(--w-display);
+  font-size: clamp(1.3rem, 1.7vw, 1.6rem); line-height: 1.1;
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.rcard__foot {
+  margin-top: auto; padding-top: var(--sp-5);
+  border-top: 1px solid var(--rule-paper);
+  font-size: 0.6875rem; line-height: 1.5; color: var(--ink-muted);
+}
+.rcard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 36px 64px -26px rgba(2, 8, 18, 0.88), 0 0 0 1px var(--accent);
+}
+
+/* Feather the ends so cards enter and leave the band rather than being cut. */
+.marquee::before, .marquee::after {
+  content: "";
+  position: absolute; top: 0; bottom: 0; width: clamp(2rem, 7vw, 7rem);
+  z-index: 2; pointer-events: none;
+}
+.marquee { position: relative; }
+.marquee::before { left: 0;  background: linear-gradient(90deg, var(--blue-800), transparent); }
+.marquee::after  { right: 0; background: linear-gradient(270deg, var(--blue-800), transparent); }
+
+/* The band must read as a roster before Splide touches it: a plain scrolling
+   row of cards rather than an empty band.
+
+   Scoped to :not(.is-initialized) on purpose. An unconditional
+   'flex: 0 0 <basis>' beats the inline width Splide sets on each slide, which
+   broke its geometry: the track collapsed to one slide's width and the list
+   was translated off-screen. The fallback must not fight the thing it is a
+   fallback for. */
+.marquee:not(.is-initialized) .splide__track { overflow-x: auto; }
+.marquee:not(.is-initialized) .splide__list { display: flex; }
+.marquee:not(.is-initialized) .splide__slide { flex: 0 0 clamp(14rem, 20vw, 17rem); }
+.marquee--static .splide__track { overflow-x: auto; }
+.marquee--static .splide__list { display: flex; }
+.marquee--static .splide__slide { flex: 0 0 clamp(14rem, 20vw, 17rem); }
+
+/* ==========================================================================
+   MATRIX
+   The alternatives section was four blocks of prose making a comparison the
+   reader had to assemble themselves. A comparison is a table. This is that
+   table, with the KAPS column raised so the argument is visible before it is
+   read, and the honest row (price) left honestly lost.
+   ========================================================================== */
+.matrix {
+  display: grid;
+  grid-template-columns: minmax(11rem, 1.4fr) repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+  margin-top: var(--sp-8);
+  position: relative;
+}
+.matrix__cell {
+  padding: var(--sp-5) var(--sp-4);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  font-size: var(--size-small); line-height: 1.5;
+  color: var(--on-blue-body);
+  min-height: 4.25rem;
+}
+.matrix__cell--row {
+  padding-left: 0;
+  color: var(--on-blue);
+  font-weight: 500;
+}
+.matrix__cell--head {
+  align-items: flex-end;
+  padding-top: var(--sp-5); padding-bottom: var(--sp-4);
+  min-height: 6rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--on-blue-muted);
+  border-bottom-color: var(--rule-strong);
+}
+
+/* The KAPS column, raised out of the table. Painted on the cells themselves:
+   an overlay div with grid-row 1/-1 resolves to a single implicit row and
+   steals a real cell, which shifted the whole table one column across. */
+.matrix__cell--kaps {
+  background: var(--blue-700);
+  color: var(--on-blue); font-weight: 500;
+  padding-left: var(--sp-5); padding-right: var(--sp-5);
+}
+.matrix > .matrix__cell--kaps:first-of-type,
+.matrix > .matrix__cell--head.matrix__cell--kaps {
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+.matrix > .matrix__cell--kaps:last-child {
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  border-bottom-color: transparent;
+}
+.matrix__cell--head.matrix__cell--kaps { color: var(--accent); }
+
+/* Marks. Drawn, not glyphs, so they hold their weight at any size. */
+.mk { display: inline-block; flex: none; }
+.mk--yes {
+  width: 0.85rem; height: 0.5rem;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg) translate(1px, -2px);
+}
+.mk--no {
+  width: 0.85rem; height: 2px;
+  background: var(--on-blue-muted); opacity: 0.6;
+}
+
+.matrix__note {
+  margin-top: var(--sp-6);
+  font-size: var(--size-label); color: var(--on-blue-muted);
+}
+
+.section--paper .matrix,
+.section--paper .matrix__cell { border-color: var(--rule-paper); }
+.section--paper .matrix__cell { color: var(--ink-body); }
+.section--paper .matrix__cell--row,
+.section--paper .matrix__cell--kaps { color: var(--ink); }
+.section--paper .matrix__col { background: #FFFFFF; }
+.section--paper .mk--yes { border-color: var(--accent-onpaper); }
+.section--paper .mk--no { background: var(--ink-muted); }
+
+@media (max-width: 60rem) {
+  /* A five-column table does not survive a phone. Each option becomes a card
+     and the row labels repeat inside it. */
+  .matrix { display: block; border-top: 0; }
+  .matrix__col { display: none; }
+  .matrix__cell { display: none; }
+  .matrix-cards { display: grid; gap: var(--sp-5); margin-top: var(--sp-7); }
+}
+@media (min-width: 60.0625rem) { .matrix-cards { display: none; } }
+
+.mcard {
+  border: 1px solid var(--rule); border-radius: var(--radius-card);
+  padding: var(--sp-5); background: var(--blue-700);
+}
+.mcard--kaps { border-color: var(--accent); }
+.mcard h3 { font-family: var(--font-body); font-size: var(--size-h3); }
+.mcard dl { margin: var(--sp-4) 0 0; display: grid; gap: var(--sp-3); }
+.mcard dt { font-size: var(--size-label); color: var(--on-blue-muted); }
+.mcard dd { margin: 0; font-size: var(--size-small); color: var(--on-blue-body); }
+
+/* ==========================================================================
+   THE CLOSE
+   Every page used to end with the same left/right split: heading on one side,
+   lead and buttons on the other, on the same blue as the four sections above
+   it. Eleven pages ending identically and quietly.
+
+   The close is now the one place the page turns to cream, immediately before
+   the dark footer. The hard edge between the two is the point. The stamp sits
+   at the top of it, because a stamp on a page is what finishing means here.
+   ========================================================================== */
+.close { text-align: center; overflow: hidden; position: relative; }
+.close__inner {
+  max-width: 56rem;
+  margin-inline: auto;
+  position: relative; z-index: 1;
+}
+.close__stamp {
+  width: clamp(4.5rem, 7vw, 6rem);
+  height: auto;
+  display: block;
+  margin: 0 auto var(--sp-6);
+  filter: drop-shadow(0 14px 24px rgba(10, 27, 51, 0.28));
+}
+.close__title {
+  font-size: clamp(2.4rem, 5.2vw, 4.5rem);
+  line-height: 1.08;
+  letter-spacing: var(--track-h1);
+  margin-top: var(--sp-4);
+}
+.close .lead {
+  margin: var(--sp-6) auto 0;
+  max-width: 52ch;
+}
+.close .btn-row { justify-content: center; margin-top: var(--sp-7); }
+
+.close__meta {
+  list-style: none; padding: 0;
+  margin: var(--sp-8) auto 0;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: var(--sp-3) 0;
+  border-top: 1px solid var(--rule-paper);
+  padding-top: var(--sp-5);
+  max-width: 46rem;
+}
+.close__meta li {
+  padding-inline: var(--sp-5);
+  font-size: var(--size-label);
+  color: var(--ink-muted);
+  border-right: 1px solid var(--rule-paper);
+}
+.close__meta li:last-child { border-right: 0; }
+.close__meta a { color: var(--ink); text-decoration: none; transition: color var(--fast) var(--ease); }
+.close__meta a:hover { color: var(--accent-onpaper); }
+
+/* A quiet ruled ground, so the cream is a printed sheet and not a blank one. */
+.close::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 55% at 50% 8%, rgba(224, 164, 88, 0.16) 0%, transparent 70%),
+    repeating-linear-gradient(180deg, transparent 0 43px, rgba(10, 27, 51, 0.045) 43px 44px);
+  mask-image: radial-gradient(75% 70% at 50% 45%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(75% 70% at 50% 45%, #000 30%, transparent 100%);
+}
+
+@media (max-width: 40rem) {
+  .close__meta { display: grid; gap: var(--sp-3); }
+  .close__meta li { border-right: 0; padding-inline: 0; }
+}
+
+/* A duo inside the sticky column has roughly a third of the page to work with,
+   which squeezed both images to about 150px. Stack them there. */
+.pin-col .photo-duo { grid-template-columns: 1fr; gap: var(--sp-5); }
+.pin-col .photo-duo > :nth-child(2) { margin-top: 0; }
+
+/* Reserve the box before the file loads. An image with height:auto has zero
+   height until it decodes, so everything below it moves when it arrives, and
+   every cached scroll position below it becomes wrong. The photo containers
+   already reserve space through their aspect presets; these did not. */
+.close__stamp { aspect-ratio: 1 / 1; }
+
+/* ==========================================================================
+   TEXTURES
+   Background surface for sections that carry no image. Not media, not a
+   focal point: a material quality, the way a sheet of paper has one.
+
+   Three, all drawn with gradients so they cost no request:
+     halftone  a two-layer offset dot screen, the print reference
+     grain     fine fibre, for cream sections especially
+     rule      ledger lines, the same ground the close uses
+
+   Deliberately NOT crop marks or registration targets. The Don't list bans
+   those, and it is right to: they are technical furniture drawn to look
+   designed, which is a different thing from a surface.
+
+   Every one is masked so it fades out rather than ending at a hard edge, and
+   every one sits under the content on z-index 0.
+   ========================================================================== */
+.tex { isolation: isolate; }
+.tex > * { position: relative; z-index: 1; }
+.tex::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(125% 95% at 50% 38%, #000 20%, transparent 88%);
+          mask-image: radial-gradient(125% 95% at 50% 38%, #000 20%, transparent 88%);
+}
+
+/* --- halftone ----------------------------------------------------------- */
+.tex--halftone::before {
+  background-image:
+    radial-gradient(rgba(242, 246, 251, 0.060) 1px, transparent 1.7px),
+    radial-gradient(rgba(242, 246, 251, 0.035) 1px, transparent 1.7px);
+  background-size: 15px 15px, 15px 15px;
+  background-position: 0 0, 7.5px 7.5px;
+}
+.section--paper.tex--halftone::before {
+  background-image:
+    radial-gradient(rgba(10, 27, 51, 0.075) 1px, transparent 1.7px),
+    radial-gradient(rgba(10, 27, 51, 0.045) 1px, transparent 1.7px);
+}
+
+/* --- grain -------------------------------------------------------------- */
+.tex--grain::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.055;
+}
+.section--paper.tex--grain::before { opacity: 0.085; }
+
+/* --- ledger rule -------------------------------------------------------- */
+.tex--rule::before {
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 43px, rgba(242, 246, 251, 0.055) 43px 44px);
+}
+.section--paper.tex--rule::before {
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 43px, rgba(10, 27, 51, 0.05) 43px 44px);
+}
+
+/* A warm lift, for sections that carry a call to action. Pairs with any of
+   the three above rather than replacing them. */
+.tex--warm { position: relative; }
+.tex--warm::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(70% 60% at 50% 0%, rgba(224, 164, 88, 0.09) 0%, transparent 72%);
+}
+
+@media (prefers-reduced-motion: reduce) { .tex::before { opacity: 0.4; } }

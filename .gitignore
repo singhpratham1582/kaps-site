@@ -1,0 +1,19 @@
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Node, if tooling is ever added
+node_modules/
+npm-debug.log*
+
+# Scratch files from local preview and screenshot runs.
+# The build writes the ten pages plus styleguide.html to the repo root, and
+# those ARE the deliverable, so they are committed. Only these temporary
+# preview copies are ignored.
+_*.html

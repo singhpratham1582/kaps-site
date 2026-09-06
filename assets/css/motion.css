@@ -1,0 +1,492 @@
+/* ==========================================================================
+   KAPS motion  ·  v1.0
+   MOTION_INTENSITY 8. Nine moves, defined in DESIGN.md. Every one of them
+   reveals content. None of them decorate.
+
+   Hard rule: if the JS never runs, everything below must still be visible.
+   Every hidden state is therefore gated behind html.js, and the motion layer
+   removes .is-armed on failure.
+   ========================================================================== */
+
+/* ---- 1 · Smooth scroll (Lenis) ----------------------------------------- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ---- 2 · Line mask ------------------------------------------------------
+   Headings split into lines, each rising out of its own clip. The mask is
+   geometric, not opacity, so a failed tween cannot leave text invisible. */
+.lines { display: block; }
+.line {
+  display: block;
+  overflow: hidden;
+  /* The mask clips to the line box. 0.08em was not enough headroom for a
+     display-scale serif with a tight line-height: descenders and the tail of
+     the 'y' were being cut off. The negative margin cancels the padding, so
+     this costs nothing in layout. */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+.line > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 900ms var(--ease-mask, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.is-in .line > span,
+.line.is-in > span { transform: none; }
+
+/* ---- 3 · Stagger reveal (base.css owns .reveal) ------------------------ */
+html.js .reveal[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease);
+}
+html.js .reveal[data-stagger].is-in > * { opacity: 1; transform: none; }
+html.js .reveal[data-stagger].is-in > *:nth-child(1) { transition-delay: 0ms; }
+html.js .reveal[data-stagger].is-in > *:nth-child(2) { transition-delay: 70ms; }
+html.js .reveal[data-stagger].is-in > *:nth-child(3) { transition-delay: 140ms; }
+html.js .reveal[data-stagger].is-in > *:nth-child(4) { transition-delay: 210ms; }
+html.js .reveal[data-stagger].is-in > *:nth-child(5) { transition-delay: 280ms; }
+html.js .reveal[data-stagger].is-in > *:nth-child(6) { transition-delay: 350ms; }
+
+/* ---- 4 · Paper wipe -----------------------------------------------------
+   Imagery arrives as if a sheet is being laid down. */
+html.js .wipe {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1100ms var(--ease-mask, cubic-bezier(0.16, 1, 0.3, 1));
+}
+html.js .wipe.is-in { clip-path: inset(0 0 0 0); }
+
+/* ---- 5 · Sticky choreography ------------------------------------------- */
+.pin-col { position: sticky; top: var(--sp-8); }
+@media (max-width: 64rem) { .pin-col { position: static; } }
+
+/* Progress readout for a sticky column */
+.track { margin-top: var(--sp-6); }
+.track__bar {
+  height: 2px; background: var(--rule); position: relative; overflow: hidden;
+}
+.track__fill {
+  position: absolute; inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.section--ink .track__bar { background: var(--rule); }
+.section--ink .track__fill { background: var(--accent); }
+
+/* ---- 6 · Horizontal travel --------------------------------------------- */
+.travel { position: relative; }
+.travel__viewport { overflow: hidden; }
+.travel__rail {
+  display: flex;
+  gap: var(--sp-6);
+  width: max-content;
+  will-change: transform;
+  padding-inline: var(--gutter);
+}
+/* No JS: becomes an ordinary horizontal scroll strip rather than a clipped row. */
+html:not(.motion-on) .travel__viewport { overflow-x: auto; }
+
+/* ---- 7 · Object tilt ---------------------------------------------------- */
+.stage { perspective: 1500px; perspective-origin: 50% 45%; }
+.tilt { transform-style: preserve-3d; will-change: transform; }
+
+/* A printed piece with real thickness and a real shadow. */
+.piece {
+  position: relative;
+  background: linear-gradient(155deg, #FFFFFF 0%, var(--paper) 55%, #EDE7DA 100%);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lift);
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
+.piece__edge {
+  position: absolute; inset: 0;
+  border-radius: var(--radius-card);
+  background: var(--blue-600);
+}
+.piece__edge:nth-of-type(1) { transform: translateZ(-8px) translate(6px, 8px); background: #C7BEAB; }
+.piece__edge:nth-of-type(2) { transform: translateZ(-5px) translate(4px, 5px); background: #D8D0BF; }
+.piece__edge:nth-of-type(3) { transform: translateZ(-2px) translate(2px, 2px); background: var(--blue-600); }
+/* The sheen that rakes across the paper as it turns. */
+.piece__face {
+  position: relative; z-index: 2; height: 100%;
+  border-radius: var(--radius-card);
+  /* Its own ground. Without this the edge layer behind it shows through
+     and the sheet renders as board, not paper. */
+  background: linear-gradient(155deg, #FFFFFF 0%, var(--paper) 58%, #F0EADE 100%);
+  overflow: hidden;
+}
+.piece__face::after {
+  content: "";
+  position: absolute; inset: -40%;
+  background: linear-gradient(102deg, transparent 40%, rgba(255,255,255,0.62) 49%, transparent 58%);
+  transform: translateX(var(--rake, -50%));
+  pointer-events: none;
+}
+
+/* ---- 8 · Page transition ------------------------------------------------ */
+.curtain {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+.curtain.is-covering { pointer-events: all; }
+
+/* ---- 9 · Scroll progress ------------------------------------------------ */
+.progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px;
+  z-index: 60; background: transparent; pointer-events: none;
+}
+.progress__fill {
+  height: 100%; width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ==========================================================================
+   FAILSAFE
+   If the motion layer never arms, every hidden state is released. Nothing
+   on this site is allowed to be stranded invisible.
+   ========================================================================== */
+html:not(.motion-on) .line > span { transform: none; }
+html:not(.motion-on) .wipe { clip-path: none; }
+html:not(.motion-on) .progress, html:not(.motion-on) .curtain { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .line > span { transform: none !important; transition: none !important; }
+  html.js .wipe { clip-path: none !important; transition: none !important; }
+  html.js .reveal[data-stagger] > * { opacity: 1 !important; transform: none !important; }
+  .progress, .curtain { display: none !important; }
+  .piece__face::after { display: none; }
+}
+
+/* ==========================================================================
+   THE PRESS
+   Restored from the earlier prototype and restyled for the blue system.
+   It sits mid-page, not in the hero: it is the mechanism section made
+   literal, so it belongs where the process is explained.
+
+   Five stations across one sticky screen, driven by five screens of scroll.
+   ========================================================================== */
+.press { position: relative; background: var(--blue-900); }
+.press__sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  display: grid; grid-template-rows: auto 1fr auto; align-items: center;
+}
+.press__track { height: 460vh; height: 460svh; }
+
+.machine { width: 100%; max-width: 86rem; margin-inline: auto; padding-inline: var(--gutter); overflow: visible; }
+.machine .ln       { stroke: rgba(242, 246, 251, 0.30); stroke-width: 1; fill: none; }
+.machine .ln--dim  { stroke: rgba(242, 246, 251, 0.12); stroke-width: 1; fill: none; }
+.machine .ln--acc  { stroke: var(--accent); stroke-width: 1; fill: none; }
+.machine .dash     { stroke-dasharray: 5 7; }
+.machine .lbl      { font-family: var(--font-body); font-size: 11px; fill: rgba(242, 246, 251, 0.34); }
+.machine .lbl--on  { fill: var(--accent); }
+
+.sheetface { fill: var(--paper); }
+.ink { opacity: 0; }
+.ink--k    { fill: #16233A; }
+.ink--half { fill: #B9AE97; }
+.ink--foil { fill: var(--accent); }
+
+.station { transition: opacity 320ms var(--ease); }
+.beam     { stroke: var(--accent); stroke-width: 2; opacity: 0; }
+.beamglow { stroke: var(--accent); stroke-width: 12; opacity: 0; filter: blur(5px); }
+
+.press__rail {
+  display: flex; width: 100%; max-width: 86rem; margin-inline: auto;
+  padding: var(--sp-5) var(--gutter) 0; border-bottom: 1px solid var(--rule);
+}
+.rail__item {
+  flex: 1; padding-bottom: var(--sp-4); position: relative;
+  font-size: var(--size-label); color: var(--on-blue-muted);
+  transition: color 320ms var(--ease);
+}
+.rail__item::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left center;
+  transition: transform 420ms var(--ease);
+}
+.rail__item[data-on="true"] { color: var(--accent); }
+.rail__item[data-on="true"]::after { transform: scaleX(1); }
+
+.press__hud {
+  width: 100%; max-width: 86rem; margin-inline: auto;
+  padding-inline: var(--gutter); padding-bottom: clamp(2rem, 5vh, 4rem);
+  display: grid; grid-template-columns: minmax(0, 30rem) 1fr; gap: var(--sp-6);
+  align-items: end;
+}
+.hud__title { font-family: var(--font-display); font-weight: var(--w-display); font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1.06; letter-spacing: -0.02em; color: var(--on-blue); min-height: 1.1em; }
+.hud__body { margin-top: var(--sp-4); color: var(--on-blue-body); max-width: 46ch; }
+.hud__meta { justify-self: end; text-align: right; font-size: var(--size-label); color: var(--on-blue-muted); line-height: 2; }
+
+@media (max-width: 62rem) {
+  .press__hud { grid-template-columns: 1fr; }
+  .hud__meta { display: none; }
+  .rail__item { font-size: 0.7rem; }
+}
+/* Without the motion layer the press is a static diagram, not a broken
+   sticky section four screens tall. */
+html:not(.motion-on) .press__track { height: 0; }
+html:not(.motion-on) .press__sticky { position: static; height: auto; padding-block: var(--sp-9); }
+@media (prefers-reduced-motion: reduce) {
+  .press__track { height: 0; }
+  .press__sticky { position: static; height: auto; padding-block: var(--sp-9); }
+}
+
+/* ==========================================================================
+   TRAVEL, corrected
+   The section was 287px tall but pinned for 3,386px of scroll, so it read
+   as a thin strip stuck to the top of an empty screen. A pinned section
+   must fill the viewport and be a composition, not a strip.
+   ========================================================================== */
+.travel {
+  min-height: 100vh; min-height: 100svh;
+  display: grid;
+  align-content: center;
+  gap: var(--sp-8);
+  padding-block: var(--sp-9);
+}
+.travel__head { max-width: var(--container); margin-inline: auto; width: 100%; padding-inline: var(--gutter); }
+.travel__foot { max-width: var(--container); margin-inline: auto; width: 100%; padding-inline: var(--gutter); }
+.travel .tile { min-height: 0; width: 17rem; }
+html:not(.motion-on) .travel { min-height: 0; }
+@media (prefers-reduced-motion: reduce) { .travel { min-height: 0; } }
+
+/* ==========================================================================
+   10 · THE BUNDLE
+   Five sheets held open as a fan, one for each thing KAPS prints. On scroll
+   they close into a single bundle and a cover lands on top of it.
+
+   Built CSS-first on purpose: the fanned, readable state is the default, so
+   if GSAP never arrives you get five legible cards instead of a pile. The
+   scrubbed timeline only ever moves away from that state.
+   ========================================================================== */
+.fan {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  gap: var(--sp-7);
+  padding-block: var(--sp-9);
+  overflow: hidden;
+}
+.fan__head, .fan__foot {
+  max-width: var(--container);
+  margin-inline: auto; width: 100%;
+  padding-inline: var(--gutter);
+}
+.fan__stage {
+  position: relative;
+  height: clamp(21rem, 48vh, 31rem);
+  display: grid; place-items: center;
+  perspective: 1600px;
+}
+
+.leaf {
+  position: absolute;
+  width: clamp(9.5rem, 13vw, 12rem);
+  aspect-ratio: 1 / 1.414;
+  padding: var(--sp-5) var(--sp-5) var(--sp-4);
+  display: flex; flex-direction: column; justify-content: flex-start;
+  border-radius: 3px;                 /* paper does not have soft corners */
+  background: linear-gradient(158deg, #FFFDF8 0%, var(--paper) 58%, #EAE3D5 100%);
+  color: var(--ink);
+  box-shadow:
+    0 34px 64px -30px rgba(2, 8, 18, 0.80),
+    0 2px 5px rgba(2, 8, 18, 0.28);
+  transform-origin: 50% 186%;          /* pivot well below, so the same angle throws
+                                          the sheets wide instead of stacking them */
+  transform: rotate(var(--fan-rot, 0deg));
+  will-change: transform;
+  text-decoration: none;
+}
+/* The fan itself. Five sheets, widest at the edges. */
+.leaf:nth-child(1) { --fan-rot: -44deg; z-index: 1; }
+.leaf:nth-child(2) { --fan-rot: -23deg; z-index: 2; }
+.leaf:nth-child(3) { --fan-rot: 0deg; z-index: 3; }
+.leaf:nth-child(4) { --fan-rot: 23deg; z-index: 2; }
+.leaf:nth-child(5) { --fan-rot: 44deg; z-index: 1; }
+
+/* A hairline of ink along the top edge, so each sheet has a printed side. */
+.leaf::before {
+  content: "";
+  position: absolute; left: var(--sp-5); top: var(--sp-5);
+  width: 1.5rem; height: 2px; background: var(--accent-onpaper);
+}
+.leaf__label {
+  margin-top: var(--sp-5);
+  font-family: var(--font-mono);
+  font-size: 0.625rem; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--accent-onpaper);
+}
+.leaf__title {
+  margin-top: var(--sp-3);
+  font-family: var(--font-display); font-weight: var(--w-display);
+  font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.14;
+  letter-spacing: -0.018em; color: var(--ink);
+}
+.leaf__foot {
+  margin-top: auto;
+  font-size: 0.6875rem; line-height: 1.5; color: var(--ink-muted);
+}
+a.leaf:hover { box-shadow: 0 40px 74px -28px rgba(2, 8, 18, 0.85), 0 0 0 1px var(--accent-onpaper); }
+
+/* The cover that lands on the closed bundle. */
+.fan__cover {
+  position: absolute; z-index: 10;
+  width: clamp(11.5rem, 16vw, 14.5rem);
+  aspect-ratio: 1 / 1.414;
+  border-radius: 3px;
+  padding: var(--sp-6) var(--sp-5);
+  display: grid; align-content: space-between; justify-items: center;
+  text-align: center;
+  background: linear-gradient(160deg, #14294A 0%, var(--blue-800) 55%, #061223 100%);
+  box-shadow:
+    0 44px 80px -30px rgba(2, 8, 18, 0.92),
+    inset 0 1px 0 rgba(242, 246, 251, 0.10);
+  pointer-events: none;
+}
+.fan__cover::after {           /* the spine */
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 7px;
+  border-radius: 3px 0 0 3px;
+  background: linear-gradient(90deg, rgba(2, 8, 18, 0.85), rgba(2, 8, 18, 0));
+}
+.fan__stamp { width: 5.5rem; height: auto; display: block; }
+.fan__mark  { width: 6.5rem; height: auto; display: block; filter: invert(1); opacity: 0.94; }
+.fan__est {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--on-blue-muted);
+}
+
+/* Default is the open fan. The cover only exists once motion is armed. */
+.fan__cover { opacity: 0; }
+html:not(.motion-on) .fan__cover { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .fan { min-height: 0; }
+  .fan__cover { display: none; }
+}
+@media (max-width: 46rem) {
+  .leaf:nth-child(1) { --fan-rot: -21deg; }
+  .leaf:nth-child(2) { --fan-rot: -10.5deg; }
+  .leaf:nth-child(4) { --fan-rot: 10.5deg; }
+  .leaf:nth-child(5) { --fan-rot: 21deg; }
+  .leaf { width: 8.5rem; padding: var(--sp-4); }
+  .fan__cover { width: 9.5rem; }
+}
+
+/* --- Bundle corrections ------------------------------------------------
+   Two faults. The head was left-aligned against a centred fan, which left a
+   wide empty column beside it. And in a fan the sheets on the right are
+   overlapped from the left, so their top-left corner (where the label and
+   title sat) was hidden behind the front sheet.
+
+   Both are the same fix: follow the geometry. The head centres over the fan,
+   and the right-hand sheets mirror their type to the edge that is actually
+   visible.
+   ------------------------------------------------------------------------ */
+.fan__head {
+  text-align: center;
+  max-width: 62rem;
+}
+.fan__head .lead {
+  margin-inline: auto;
+  max-width: 54ch;
+}
+.fan__head h2 { margin-inline: auto; }
+.fan__foot { text-align: center; }
+
+/* Sheets 4 and 5 are overlapped from the left. Mirror their type. */
+.leaf:nth-child(4), .leaf:nth-child(5) { text-align: right; }
+.leaf:nth-child(4)::before,
+.leaf:nth-child(5)::before { left: auto; right: var(--sp-5); }
+
+/* The front sheet is the one being read. Give it a little more room and a
+   brighter edge so the eye knows where to start. */
+.leaf:nth-child(3) {
+  box-shadow:
+    0 44px 76px -30px rgba(2, 8, 18, 0.88),
+    0 0 0 1px rgba(224, 164, 88, 0.22);
+}
+
+/* ==========================================================================
+   PRESS  ·  corrections
+   Two things. The rail labels sat under the fixed header, which is what made
+   the section look clipped. And a full-height machine competing with a fixed
+   nav is one element too many on screen.
+
+   So the nav gets out of the way for the length of the press, and comes back
+   the moment it ends.
+   ========================================================================== */
+.press__sticky { padding-top: clamp(3.5rem, 7vh, 5.5rem); }
+
+.header {
+  transition: transform var(--base) var(--ease), opacity var(--base) var(--ease),
+              background-color var(--base) var(--ease), box-shadow var(--base) var(--ease);
+}
+.header[data-hidden="true"] {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .header[data-hidden="true"] { transform: none; opacity: 1; pointer-events: auto; }
+}
+
+/* Same reason as .close__stamp: reserve the box so nothing below shifts. */
+.fan__stamp { aspect-ratio: 1 / 1; }
+.fan__mark  { aspect-ratio: 361 / 180; }
+
+/* ==========================================================================
+   LOADING SCREEN
+   The mark sits on the ground colour while the page assembles itself, then
+   lifts with the curtain.
+
+   Deliberately not a child of .curtain: the curtain animates on scaleY, and
+   a child of it would be squashed flat as it moves. Two layers, one job each.
+
+   It is also dismissed by main.js, which has no dependencies, rather than by
+   the motion layer. A loading screen that outlives its own script is the
+   worst failure this site could ship.
+   ========================================================================== */
+.loader {
+  position: fixed; inset: 0; z-index: 201;
+  display: grid; place-items: center;
+  background: var(--blue-800);
+  pointer-events: none;
+  opacity: 0; visibility: hidden;
+  transition: opacity 520ms var(--ease), visibility 0s linear 520ms;
+}
+/* Shown the moment the head script has run, so there is no flash of an
+   unstyled page underneath it. */
+html.js .loader {
+  opacity: 1; visibility: visible;
+  transition: opacity 520ms var(--ease), visibility 0s;
+}
+html.js .loader.is-done {
+  opacity: 0; visibility: hidden;
+  transition: opacity 520ms var(--ease), visibility 0s linear 520ms;
+}
+.loader img {
+  width: clamp(12rem, 26vw, 21rem);
+  height: auto;
+  animation: loader-breathe 2.4s var(--ease) infinite;
+}
+@keyframes loader-breathe {
+  0%, 100% { opacity: 0.62; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loader img { animation: none; opacity: 1; }
+  .loader, html.js .loader { transition: none; }
+}

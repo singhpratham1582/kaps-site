@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAPS hero variants</title>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/heroes.css">
+</head>
+<body>
+
+<div class="hvbar">
+  <span>Hero</span>
+  <button data-hv="a" aria-pressed="true">A &middot; Foil</button>
+  <button data-hv="b" aria-pressed="false">B &middot; The sheet</button>
+  <button data-hv="c" aria-pressed="false">C &middot; The fan</button>
+  <span style="margin-left:auto">Move the cursor. All three respond to it.</span>
+</div>
+
+<!-- ====================================================================
+     A · FOIL
+     ==================================================================== -->
+<section class="hv hv-a" data-hv-panel="a" data-spot>
+  <div class="spot" data-spot-layer></div>
+
+  <p class="hv-a__meta hv-a__meta--tl">Est. 1995</p>
+  <p class="hv-a__meta hv-a__meta--tr">New Delhi</p>
+  <p class="hv-a__meta hv-a__meta--bl">Thirty-six organisations &middot; Ten sectors</p>
+  <p class="hv-a__meta hv-a__meta--br">ink runs deep.</p>
+
+  <div class="hv-a__inner">
+    <h1 class="hv-a__head foil foil--idle" data-foil>Print you never have to check.</h1>
+    <div class="hv-a__rule"></div>
+    <p class="hv-a__sub">For 31 years, KAPS has printed for the organisations that cannot afford a reprint. Courts, hospitals, airlines and ministries.</p>
+    <div class="btn-row" style="justify-content:center; margin-top:var(--sp-7)">
+      <a class="btn btn--primary" href="contact.html">
+        <span class="btn__label" data-text="Send us your file"><span>Send us your file</span></span>
+        <span class="btn__arrow"><i>&rarr;</i><i>&rarr;</i></span>
+      </a>
+      <a class="btn btn--ghost" href="clients.html">
+        <span class="btn__label" data-text="See the client list"><span>See the client list</span></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <svg class="grain"><filter id="gA"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#gA)"/></svg>
+</section>
+
+<!-- ====================================================================
+     B · THE SHEET
+     ==================================================================== -->
+<section class="hv hv-b" data-hv-panel="b" data-spot hidden>
+  <div class="spot" data-spot-layer></div>
+
+  <div class="container hv-b__grid">
+    <div>
+      <p class="eyebrow">Est. 1995 &middot; New Delhi</p>
+      <h1 class="display" style="margin-top:var(--sp-5); font-size:clamp(2.75rem,5vw,4.5rem)">Print you never have to <span class="foil foil--idle" data-foil>check</span>.</h1>
+      <p class="lead" style="margin-top:var(--sp-6); max-width:42ch">For 31 years, KAPS has printed for organisations that cannot afford a reprint. Courts, hospitals, airlines and ministries.</p>
+      <div class="btn-row" style="margin-top:var(--sp-7)">
+        <a class="btn btn--primary" href="contact.html">
+          <span class="btn__label" data-text="Send us your file"><span>Send us your file</span></span>
+          <span class="btn__arrow"><i>&rarr;</i><i>&rarr;</i></span>
+        </a>
+        <a class="btn btn--ghost" href="clients.html">
+          <span class="btn__label" data-text="See the client list"><span>See the client list</span></span>
+        </a>
+      </div>
+      <p class="provenance" style="margin-top:var(--sp-6); max-width:44ch">Delhi High Court &middot; AIIMS &middot; SAIL &middot; BHEL &middot; Turkish Airlines &middot; Cox &amp; Kings</p>
+    </div>
+
+    <div class="stage3d">
+      <div class="sheet3d" data-tilt>
+        <div class="sheet3d__layer"></div>
+        <div class="sheet3d__layer"></div>
+        <div class="sheet3d__layer"></div>
+        <div class="sheet3d__face">
+          <p class="sf__eyebrow">Annual report</p>
+          <p class="sf__title">Held to the specification, every run.</p>
+          <div class="sf__foil" data-sheetfoil>Gold foil &middot; 300 gsm</div>
+          <div class="sf__rules"><i></i><i></i><i></i></div>
+          <div class="sf__foot"><span>Offset</span><span>Est. 1995</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <svg class="grain"><filter id="gB"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#gB)"/></svg>
+</section>
+
+<!-- ====================================================================
+     C · THE FAN
+     ==================================================================== -->
+<section class="hv hv-c" data-hv-panel="c" data-spot hidden>
+  <div class="spot" data-spot-layer></div>
+
+  <div class="hv-c__inner">
+    <p class="eyebrow" style="text-align:center">Est. 1995 &middot; New Delhi &middot; Seven disciplines</p>
+    <h1 class="hv-c__head" style="margin-top:var(--sp-5)">Print you never have to <span class="foil foil--idle" data-foil>check</span>.</h1>
+
+    <div class="fan" data-fan>
+      <div class="piece piece--halftone" data-piece style="--i:-2">
+        <p class="piece__tag">Annual report</p>
+        <p class="piece__name">5,000 run</p>
+        <div class="piece__bar"></div>
+      </div>
+      <div class="piece" data-piece style="--i:-1">
+        <p class="piece__tag">Invitation</p>
+        <p class="piece__name">Gold foil</p>
+        <div class="piece__lines"><i></i><i></i><i></i></div>
+        <div class="piece__bar"></div>
+      </div>
+      <div class="piece" data-piece style="--i:0">
+        <p class="piece__tag">Company profile</p>
+        <p class="piece__name">Held on file</p>
+        <div class="piece__lines"><i></i><i></i><i></i></div>
+        <div class="piece__bar"></div>
+      </div>
+      <div class="piece" data-piece style="--i:1">
+        <p class="piece__tag">Packaging</p>
+        <p class="piece__name">50 to 50,000</p>
+        <div class="piece__lines"><i></i><i></i></div>
+        <div class="piece__bar"></div>
+      </div>
+      <div class="piece piece--halftone" data-piece style="--i:2">
+        <p class="piece__tag">Certificate</p>
+        <p class="piece__name">Emboss</p>
+        <div class="piece__bar"></div>
+      </div>
+    </div>
+
+    <p class="hv-c__sub">Courts, hospitals, airlines and ministries. Thirty-six organisations that cannot afford a reprint.</p>
+    <div class="btn-row" style="justify-content:center; margin-top:var(--sp-6)">
+      <a class="btn btn--primary" href="contact.html">
+        <span class="btn__label" data-text="Send us your file"><span>Send us your file</span></span>
+        <span class="btn__arrow"><i>&rarr;</i><i>&rarr;</i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <svg class="grain"><filter id="gC"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#gC)"/></svg>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var g = window.gsap;
+
+  /* ---- Variant switcher ------------------------------------------------ */
+  var panels = document.querySelectorAll('[data-hv-panel]');
+  document.querySelectorAll('[data-hv]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      panels.forEach(function (p) { p.hidden = p.dataset.hvPanel !== b.dataset.hv; });
+      document.querySelectorAll('[data-hv]').forEach(function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      if (b.dataset.hv === 'c') fanIn();
+    });
+  });
+
+  /* ---- Cursor: moves the light and the foil highlight ------------------ */
+  document.querySelectorAll('[data-spot]').forEach(function (panel) {
+    panel.addEventListener('mousemove', function (e) {
+      var r = panel.getBoundingClientRect();
+      var px = ((e.clientX - r.left) / r.width) * 100;
+      var py = ((e.clientY - r.top) / r.height) * 100;
+      var layer = panel.querySelector('[data-spot-layer]');
+      if (layer) { layer.style.setProperty('--sx', px + '%'); layer.style.setProperty('--sy', py + '%'); }
+      panel.querySelectorAll('[data-foil]').forEach(function (f) {
+        f.classList.remove('foil--idle');
+        f.style.setProperty('--fx', px + '%');
+        f.style.setProperty('--fy', py + '%');
+      });
+      var sf = panel.querySelector('[data-sheetfoil]');
+      if (sf) sf.style.setProperty('--foilpos', px + '%');
+    });
+    panel.addEventListener('mouseleave', function () {
+      panel.querySelectorAll('[data-foil]').forEach(function (f) { f.classList.add('foil--idle'); });
+    });
+  });
+
+  /* ---- B · the sheet tilts toward the cursor and rakes light ----------- */
+  var sheet = document.querySelector('[data-tilt]');
+  if (sheet && g && !reduce) {
+    var face = sheet.querySelector('.sheet3d__face');
+    var rx = g.quickTo(sheet, 'rotationX', { duration: 0.85, ease: 'power3' });
+    var ry = g.quickTo(sheet, 'rotationY', { duration: 0.85, ease: 'power3' });
+    g.set(sheet, { rotationX: 8, rotationY: -17 });
+    g.to(sheet, { y: -14, duration: 4.2, ease: 'sine.inOut', repeat: -1, yoyo: true });
+
+    var panelB = document.querySelector('[data-hv-panel="b"]');
+    panelB.addEventListener('mousemove', function (e) {
+      var r = panelB.getBoundingClientRect();
+      var nx = (e.clientX - r.left) / r.width - 0.5;
+      var ny = (e.clientY - r.top) / r.height - 0.5;
+      ry(-nx * 34 - 8);
+      rx(ny * 20 + 6);
+      if (face) face.style.setProperty('--rake', (nx * 130 - 20) + '%');
+    });
+  }
+
+  /* ---- C · the pieces fan out of the stack ----------------------------- */
+  function fanIn() {
+    var fan = document.querySelector('[data-fan]');
+    if (!fan) return;
+    fan.classList.add('is-closed');
+    // force a reflow so the closed state is committed before we open it
+    void fan.offsetWidth;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { fan.classList.remove('is-closed'); });
+    });
+  }
+
+  var panelC = document.querySelector('[data-hv-panel="c"]');
+  if (panelC && g && !reduce) {
+    panelC.addEventListener('mousemove', function (e) {
+      var r = panelC.getBoundingClientRect();
+      var nx = (e.clientX - r.left) / r.width - 0.5;
+      document.querySelectorAll('[data-piece]').forEach(function (p, i) {
+        g.to(p, { rotationY: -nx * 16, duration: 0.7, ease: 'power3', overwrite: 'auto' });
+      });
+    });
+  }
+
+  // Prime whichever panel is visible first.
+  if (!document.querySelector('[data-hv-panel="c"]').hidden) fanIn();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+/* ==========================================================================
+   THE PRESS
+   The page is one machine. Scrolling runs it. A sheet enters at FILE and
+   leaves at DELIVERY, and the five stations in between are KAPS's actual
+   process, so the site's narrative and the company's mechanism are the
+   same thing.
+
+   Drawn as a technical line diagram in brass hairlines rather than a
+   rendered machine: it matches the registration marks, spec cards and
+   density wedges already in the system, and a patent drawing reads more
+   institutional than a 3D render ever would.
+   ========================================================================== */
+
+.press {
+  position: relative;
+  background: var(--ink-900);
+}
+
+/* The pinned stage. Height is set by the scroll track below it. */
+.press__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+}
+
+/* Scroll track: five screens of scroll drive one screen of machine. */
+.press__track { height: 500svh; }
+
+/* ---- Machine ------------------------------------------------------------ */
+.machine {
+  width: 100%;
+  max-width: 92rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  overflow: visible;
+}
+.machine .ln      { stroke: rgba(250, 247, 242, 0.30); stroke-width: 1; fill: none; }
+.machine .ln--dim { stroke: rgba(250, 247, 242, 0.13); stroke-width: 1; fill: none; }
+.machine .ln--brass { stroke: var(--brass-500); stroke-width: 1; fill: none; }
+.machine .dash    { stroke-dasharray: 5 7; }
+.machine .lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  fill: rgba(250, 247, 242, 0.34);
+}
+.machine .lbl--on { fill: var(--brass-300); }
+
+/* The sheet travelling through */
+.sheetface { fill: var(--paper-100); }
+.ink { opacity: 0; }
+.ink--k { fill: #1A1A1A; }
+.ink--halftone { fill: var(--paper-400); }
+.ink--foil { fill: var(--brass-500); }
+
+/* Station highlight ring */
+.station { transition: opacity 300ms var(--ease-out); }
+
+/* Scanner beam */
+.beam { stroke: var(--brass-300); stroke-width: 2; opacity: 0; }
+.beamglow { stroke: var(--brass-300); stroke-width: 10; opacity: 0; filter: blur(4px); }
+
+/* ---- HUD ---------------------------------------------------------------- */
+.press__hud {
+  position: relative;
+  z-index: 3;
+  padding-inline: var(--gutter);
+  max-width: 92rem;
+  margin-inline: auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 30rem) 1fr;
+  gap: var(--sp-6);
+  align-items: start;
+  padding-bottom: clamp(2rem, 5vh, 4rem);
+}
+.hud__num {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  color: var(--brass-500);
+  padding-top: 0.5rem;
+}
+.hud__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.2vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  min-height: 1.1em;
+}
+.hud__body {
+  margin-top: var(--sp-4);
+  color: var(--text-muted);
+  max-width: 46ch;
+  line-height: 1.75;
+}
+.hud__meta {
+  justify-self: end;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+  line-height: 2;
+}
+@media (max-width: 62rem) {
+  .press__hud { grid-template-columns: 4rem 1fr; }
+  .hud__meta { display: none; }
+}
+
+/* The stage ribbon along the top */
+.press__rail {
+  display: flex;
+  gap: 0;
+  padding: var(--sp-5) var(--gutter) 0;
+  max-width: 92rem;
+  margin-inline: auto;
+  width: 100%;
+  border-bottom: 1px solid var(--rule);
+}
+.rail__item {
+  flex: 1;
+  padding-bottom: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+  position: relative;
+  transition: color 320ms var(--ease-out);
+}
+.rail__item::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: var(--brass-500);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 400ms var(--ease-out);
+}
+.rail__item[data-on="true"] { color: var(--brass-300); }
+.rail__item[data-on="true"]::after { transform: scaleX(1); }
+@media (max-width: 48rem) {
+  .rail__item { font-size: 0.5rem; letter-spacing: 0.1em; }
+}
+
+/* ---- Intro and outro ---------------------------------------------------- */
+.press-intro, .press-outro {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--sp-9) var(--gutter);
+}
+.press-intro { background: var(--ink-900); }
+.press-scroll {
+  position: absolute;
+  bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 0.6875rem;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--text-faint);
+  display: grid; justify-items: center; gap: var(--sp-3);
+}
+.press-scroll i { font-style: normal; animation: nudge 2.2s var(--ease-in-out) infinite; }
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press__track { height: auto; }
+  .press__sticky { position: static; height: auto; padding-block: var(--sp-9); }
+  .press-scroll i { animation: none; }
+}
+
+/* The HUD must be readable even if its entrance tween never runs. */
+.hud__title, .hud__body { opacity: 1; }
+
+/* svh is correct on real browsers; vh is the fallback where it is not. */
+.press__sticky { height: 100vh; height: 100svh; }
+.press__track  { height: 500vh; height: 500svh; }
+.press-intro, .press-outro { min-height: 100vh; min-height: 100svh; }
